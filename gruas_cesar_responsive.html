@@ -1,9 +1,8 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Grúas César</title>
   <style>
     * {
@@ -20,29 +19,26 @@
       background-attachment: fixed;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
       padding: 20px;
     }
 
     .overlay {
-      background-color: rgba(0, 0, 0, 0.6);
+      background-color: rgba(0, 0, 0, 0.7);
       padding: 30px;
       border-radius: 15px;
+      max-width: 800px;
+      margin: 0 auto;
       text-align: center;
       color: #00bfff;
-      width: 100%;
-      max-width: 600px;
     }
 
     .overlay h1 {
-      font-size: 2em;
+      font-size: 2.5em;
       margin-bottom: 10px;
     }
 
     .overlay p {
-      font-size: 1.1em;
+      font-size: 1.2em;
       margin-bottom: 20px;
     }
 
@@ -57,7 +53,7 @@
 
     .phone {
       margin-top: 20px;
-      font-size: 1.3em;
+      font-size: 1.5em;
       color: #ffff00;
     }
 
@@ -83,14 +79,68 @@
       background-color: #007bff;
     }
 
-    @media (max-width: 600px) {
-      .overlay h1 {
-        font-size: 1.5em;
-      }
+    .formulario {
+      background-color: rgba(255, 255, 255, 0.1);
+      margin-top: 30px;
+      padding: 20px;
+      border-radius: 10px;
+      text-align: left;
+    }
 
-      .overlay p, .phone {
-        font-size: 1em;
-      }
+    .formulario input, .formulario textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: none;
+      border-radius: 5px;
+    }
+
+    .formulario button {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      background-color: #00bfff;
+      color: white;
+      font-weight: bold;
+    }
+
+    .mapa {
+      margin-top: 30px;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    iframe {
+      width: 100%;
+      height: 300px;
+      border: 0;
+    }
+
+    .testimonios {
+      margin-top: 30px;
+      color: #fff;
+    }
+
+    .testimonio {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 15px;
+    }
+
+    .floating-whatsapp {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: #25D366;
+      color: white;
+      padding: 15px;
+      border-radius: 50%;
+      text-decoration: none;
+      font-size: 24px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+      z-index: 1000;
     }
   </style>
 </head>
@@ -105,10 +155,39 @@
       <li>Traslado de vehículos dentro y fuera de Barcelona</li>
     </ul>
     <div class="phone">WhatsApp: 633 078 354</div>
+
     <div class="buttons">
       <a class="whatsapp" href="https://wa.me/34633078354" target="_blank">Enviar WhatsApp</a>
       <a class="call" href="tel:+34633078354">Llamar ahora</a>
     </div>
+
+    <div class="formulario">
+      <h2>Solicita Asistencia</h2>
+      <form>
+        <input type="text" placeholder="Tu nombre" required />
+        <input type="tel" placeholder="Tu teléfono" required />
+        <textarea placeholder="¿Dónde necesitas la grúa?" required></textarea>
+        <button type="submit">Enviar</button>
+      </form>
+    </div>
+
+    <div class="testimonios">
+      <h2>Testimonios</h2>
+      <div class="testimonio">
+        ⭐⭐⭐⭐⭐ “Rápido y muy profesional. ¡Gracias Grúas César!” – Laura G.
+      </div>
+      <div class="testimonio">
+        ⭐⭐⭐⭐⭐ “Llegaron en menos de 15 minutos. Servicio excelente.” – Javier R.
+      </div>
+    </div>
+
+    <div class="mapa">
+      <h2 style="margin-bottom: 10px;">Cobertura en Barcelona</h2>
+      <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2993.0598336939326!2d2.173403376517833!3d41.38506397129557!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12a4a2fbb3dba5ff%3A0x400fae02160fc10!2sBarcelona!5e0!3m2!1ses!2ses!4v1713785192801!5m2!1ses!2ses" allowfullscreen=""></iframe>
+    </div>
   </div>
+
+  <a href="https://wa.me/34633078354" class="floating-whatsapp" target="_blank">💬</a>
 </body>
 </html>
+
