@@ -61,13 +61,9 @@
       padding: clamp(16px, 3vw, 32px);
     }
 
-    .container{ 
-      max-width: 980px; margin: 0 auto; 
-    }
+    .container{ max-width: 980px; margin: 0 auto; }
 
-    header{
-      display: grid; gap: 8px; text-align: center; margin-bottom: 16px;
-    }
+    header{ display: grid; gap: 8px; text-align: center; margin-bottom: 16px; }
     header h1{ font-size: clamp(28px, 5vw, 44px); letter-spacing: .5px; }
     header p{ color: var(--muted); font-size: clamp(16px, 2.6vw, 18px); }
 
@@ -79,8 +75,11 @@
     .badge{ display:inline-flex; align-items:center; gap:8px; padding:6px 10px; border-radius:999px; font-weight:600; background: rgba(56,189,248,0.12); color: var(--primary-2); }
 
     ul.services{ list-style: none; margin: 12px 0 0; padding: 0; }
-    ul.services li{ display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius: 12px; background: rgba(255,255,255,0.04); margin-bottom:10px; }
-    ul.services li::before{ content:"🚚"; }
+    /* Quitamos el "li::before" fijo para que no choque con los iconos dinámicos */
+    ul.services li{
+      display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius: 12px;
+      background: rgba(255,255,255,0.04); margin-bottom:10px;
+    }
 
     .cta-row{ display:flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
     .btn{ appearance: none; text-decoration:none; border:0; cursor: pointer; font-weight:700; border-radius: 12px; padding: 12px 16px; display:inline-flex; align-items:center; gap:10px; }
@@ -139,12 +138,8 @@
         <!-- Columna izquierda: Servicios + Testimonios + Mapa -->
         <section class="card">
           <h2>Servicios</h2>
-          <ul class="services">
-            <li>Extracciones de parking</li>
-            <li>Cambios de batería (AGM/EFB y convencionales)</li>
-            <li>Reparación de pinchazos</li>
-            <li>Traslado de vehículos dentro y fuera de Barcelona</li>
-          </ul>
+          <!-- La lista se rellena por JS -->
+          <ul class="services"></ul>
 
           <div class="testimonios">
             <h2>Testimonios</h2>
@@ -169,25 +164,20 @@
 
             <div class="full">
               <label for="servicio">¿Qué necesitas?</label>
-              <select id="servicio" name="servicio" required>
-                <option value="" disabled selected>Selecciona un servicio</option>
-                <option>Extracción de parking</option>
-                <option>Cambio de batería</option>
-                <option>Pinchazo / rueda</option>
-                <option>Traslado de vehículo</option>
-                <option>Arranque con pinzas</option>
-                <option>Otro</option>
-              </select>
+              <!-- El select se rellena por JS -->
+              <select id="servicio" name="servicio" required></select>
             </div>
 
             <div>
               <label for="nombre">Tu nombre</label>
               <input type="text" id="nombre" name="nombre" placeholder="Ej. Carlos" required />
+            </div>
+
             <div>
-  <label for="telefono">Tu teléfono</label>
-  <input type="tel" id="telefono" name="telefono" inputmode="tel" autocomplete="tel"
-         placeholder="Ej. +34 633 078 354" required />
-</div>
+              <label for="telefono">Tu teléfono</label>
+              <!-- sin pattern; validación/normalización en JS -->
+              <input type="tel" id="telefono" name="telefono" inputmode="tel" autocomplete="tel" placeholder="Ej. +34 633 078 354" required />
+            </div>
 
             <div>
               <label for="matricula">Matrícula (opcional)</label>
@@ -260,6 +250,71 @@
       }, { enableHighAccuracy: true, timeout: 8000, maximumAge: 0 });
     });
 
+    /* ==============
+       SERVICIOS + ICONOS (select + lista)
+    ===============*/
+    const SERVICES = [
+      { text: "Extracción de parking", icon: "🚚" },
+      { text: "Cambio de batería (AGM/EFB y convencionales)", icon: "🔋" },
+      { text: "Pinchazo / rueda", icon: "🛞" },
+      { text: "Arranque con pinzas", icon: "⚡" },
+      { text: "Traslado de vehículos y motos", icon: "🚗🏍️" },
+      { text: "Traslado de larga distancia", icon: "🛣️" },
+      { text: "Apertura de vehículo (puertas cerradas)", icon: "🔑" },
+      { text: "Suministro de combustible", icon: "⛽" },
+      { text: "Asistencia a motos", icon: "🏍️" },
+      { text: "Rescate fuera de vía (zanjas, barro, etc.)", icon: "🆘" },
+      { text: "Vehículo alto (+2,10 m)", icon: "📏" },
+      { text: "Otro", icon: "❓" }
+    ];
+
+    (function hydrateServices(){
+      const select = document.getElementById('servicio');
+      const ul = document.querySelector('ul.services');
+      if (!select || !ul) return;
+
+      // Placeholder primero
+      const placeholder = document.createElement('option');
+      placeholder.value = "";
+      placeholder.disabled = true;
+      placeholder.selected = true;
+      placeholder.textContent = "Selecciona un servicio";
+      select.appendChild(placeholder);
+
+      // Opciones
+      SERVICES.forEach(srv => {
+        const opt = document.createElement('option');
+        opt.value = srv.text;
+        opt.textContent = srv.text;
+        select.appendChild(opt);
+      });
+
+      // Lista visible (sin "Otro")
+      ul.innerHTML = "";
+      SERVICES.forEach(srv => {
+        if (srv.text === "Otro") return;
+        const li = document.createElement('li');
+        li.textContent = `${srv.icon} ${srv.text}`;
+        ul.appendChild(li);
+      });
+    })();
+
+    /* ==============
+       TELÉFONO: normalización a E.164 (+XXXXXXXXXXX)
+    ===============*/
+    const tel = document.getElementById('telefono');
+    function normalizarTelefono(valor) {
+      let numero = valor.replace(/[^0-9+]/g, '');
+      if (numero.startsWith('00')) numero = '+' + numero.slice(2);
+      if (numero.startsWith('+')) return numero;
+      if (numero.startsWith('34') && numero.length >= 11) return '+' + numero;
+      if (/^[6-9]\d{8}$/.test(numero)) return '+34' + numero; // asume ES si 9 dígitos 6–9
+      return '+' + numero;
+    }
+    tel.addEventListener('input', () => {
+      tel.value = tel.value.replace(/[^0-9+]/g, '');
+    });
+
     // Formulario -> WhatsApp
     const form = document.getElementById('asistenciaForm');
     form.addEventListener('submit', (e) => {
@@ -269,10 +324,20 @@
       // Honeypot
       if (document.getElementById('empresa').value){ return; }
 
-      // Validación simple
+      // Validación simple de requeridos
       if (!form.checkValidity()){
         estado.textContent = 'Revisa los campos obligatorios.';
         form.reportValidity();
+        return;
+      }
+
+      // Normalización y validación de teléfono
+      const telefonoInput = linea(form.telefono.value) || "";
+      const telE164 = normalizarTelefono(telefonoInput);
+      const telefonoValido = /^\+\d{8,15}$/.test(telE164);
+      if (!telefonoValido){
+        estado.textContent = 'Número no válido. Ej: +34633078354';
+        tel.focus();
         return;
       }
 
@@ -281,7 +346,6 @@
 
       const servicio = form.servicio.value;
       const nombre = linea(form.nombre.value);
-      const telefono = linea(form.telefono.value);
       const matricula = linea(form.matricula.value);
       const vehiculo = linea(form.vehiculo.value);
       const ubicacion = linea(form.ubicacion.value);
@@ -298,12 +362,12 @@
       if (vehiculo) msg += `🔎 Modelo: ${encodeURIComponent(vehiculo)}%0A`;
       if (detalles) msg += `📝 Detalles: ${encodeURIComponent(detalles)}%0A`;
       if (nombre) msg += `%0A👤 Nombre: ${encodeURIComponent(nombre)}`;
-      if (telefono) msg += `%0A📞 Tel: ${encodeURIComponent(telefono)}`;
+      if (telE164) msg += `%0A📞 Tel: ${encodeURIComponent(telE164)}`;
 
-      // UTM sencillas para saber desde dónde llegó (opcional)
+      // UTM sencillas
       const utm = 'utm_source=web&utm_medium=form&utm_campaign=wa';
 
-      // Detectar si hay app instalada (solo pista básica)
+      // Detectar si hay app instalada (pista básica)
       const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
       const waUrl = `https://wa.me/${phoneE164.replace('+','')}?text=${msg}&${utm}`;
       const waApp = `whatsapp://send?phone=${phoneE164}&text=${msg}`;
