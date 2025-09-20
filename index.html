@@ -325,3 +325,63 @@
   </script>
 </body>
 </html>
+// --- Normalización a formato internacional E.164 ---
+const tel = document.getElementById('telefono');
+const form = document.getElementById('asistenciaForm');
+
+function normalizarTelefono(valor) {
+  // Quitamos todo excepto dígitos y +
+  let numero = valor.replace(/[^0-9+]/g, '');
+
+  // Si empieza con 00 → convertir a +
+  if (numero.startsWith('00')) {
+    numero = '+' + numero.slice(2);
+  }
+
+  // Si ya empieza con +, lo dejamos
+  if (numero.startsWith('+')) {
+    return numero;
+  }
+
+  // Si empieza con 34 (ej: 34633078354) → añadimos +
+  if (numero.startsWith('34') && numero.length >= 11) {
+    return '+' + numero;
+  }
+
+  // Si son 9 dígitos y empieza por 6–9 → asumimos España (+34)
+  if (/^[6-9]\d{8}$/.test(numero)) {
+    return '+34' + numero;
+  }
+
+  // En cualquier otro caso, añadimos + delante
+  return '+' + numero;
+}
+
+// Al escribir → limpiamos formato
+tel.addEventListener('input', () => {
+  tel.value = tel.value.replace(/[^0-9+]/g, '');
+});
+
+// Antes de enviar → validamos y normalizamos
+form.addEventListener('submit', (e) => {
+  const limpio = normalizarTelefono(tel.value.trim());
+
+  // Validación básica E.164: + y 8–15 dígitos
+  const valido = /^\+\d{8,15}$/.test(limpio);
+
+  if (!valido) {
+    e.preventDefault();
+    document.getElementById('estado').textContent = 'Número no válido. Ej: +34633078354';
+    tel.focus();
+    return;
+  }
+
+  // Sobrescribimos el valor final normalizado
+  tel.value = limpio;
+
+  // También reemplaza en el mensaje de WhatsApp:
+  // Busca tu línea original:
+  // if (telefono) msg += `%0A📞 Tel: ${encodeURIComponent(telefono)}`;
+  // Y cámbiala por:
+  // if (telefono) msg += `%0A📞 Tel: ${encodeURIComponent(limpio)}`;
+});
