@@ -1,193 +1,78 @@
 <!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Grúas César</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+});
 
-    body {
-      background-image: url('fondo-gruas-cesar.png');
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      background-attachment: fixed;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      min-height: 100vh;
-      padding: 20px;
-    }
 
-    .overlay {
-      background-color: rgba(0, 0, 0, 0.7);
-      padding: 30px;
-      border-radius: 15px;
-      max-width: 800px;
-      margin: 0 auto;
-      text-align: center;
-      color: #00bfff;
-    }
+// Formulario -> WhatsApp
+const form = document.getElementById('asistenciaForm');
+form.addEventListener('submit', (e) => {
+e.preventDefault();
+const submitBtn = document.getElementById('enviarBtn');
 
-    .overlay h1 {
-      font-size: 2.5em;
-      margin-bottom: 10px;
-    }
 
-    .overlay p {
-      font-size: 1.2em;
-      margin-bottom: 20px;
-    }
+// Honeypot
+if (document.getElementById('empresa').value){ return; }
 
-    .services {
-      text-align: left;
-      color: #ffffff;
-    }
 
-    .services li {
-      margin: 8px 0;
-    }
+// Validación simple
+if (!form.checkValidity()){
+estado.textContent = 'Revisa los campos obligatorios.';
+form.reportValidity();
+return;
+}
 
-    .phone {
-      margin-top: 20px;
-      font-size: 1.5em;
-      color: #ffff00;
-    }
 
-    .buttons {
-      margin-top: 20px;
-    }
+submitBtn.disabled = true;
+submitBtn.textContent = 'Abriendo WhatsApp…';
 
-    .buttons a {
-      text-decoration: none;
-      display: inline-block;
-      margin: 10px 10px 0;
-      padding: 10px 20px;
-      border-radius: 8px;
-      color: white;
-      font-weight: bold;
-    }
 
-    .whatsapp {
-      background-color: #25D366;
-    }
+const servicio = form.servicio.value;
+const nombre = linea(form.nombre.value);
+const telefono = linea(form.telefono.value);
+const matricula = linea(form.matricula.value);
+const vehiculo = linea(form.vehiculo.value);
+const ubicacion = linea(form.ubicacion.value);
+const detalles = linea(form.detalles.value);
 
-    .call {
-      background-color: #007bff;
-    }
 
-    .formulario {
-      background-color: rgba(255, 255, 255, 0.1);
-      margin-top: 30px;
-      padding: 20px;
-      border-radius: 10px;
-      text-align: left;
-    }
+// Mensaje
+let msg = `Hola Grúas César, necesito *${servicio}*.%0A`;
+if (ubicacion) msg += `%0A📍 Ubicación: ${encodeURIComponent(ubicacion)}%0A`;
+if (gps) {
+const gmaps = `https://maps.google.com/?q=${gps.lat},${gps.lng}`;
+msg += `📡 GPS: ${encodeURIComponent(gmaps)} (±${gps.acc}m)%0A`;
+}
+if (matricula) msg += `🚘 Matrícula: ${encodeURIComponent(matricula)}%0A`;
+if (vehiculo) msg += `🔎 Modelo: ${encodeURIComponent(vehiculo)}%0A`;
+if (detalles) msg += `📝 Detalles: ${encodeURIComponent(detalles)}%0A`;
+if (nombre) msg += `%0A👤 Nombre: ${encodeURIComponent(nombre)}`;
+if (telefono) msg += `%0A📞 Tel: ${encodeURIComponent(telefono)}`;
 
-    .formulario input, .formulario textarea {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 15px;
-      border: none;
-      border-radius: 5px;
-    }
 
-    .formulario button {
-      width: 100%;
-      padding: 10px;
-      border: none;
-      border-radius: 5px;
-      background-color: #00bfff;
-      color: white;
-      font-weight: bold;
-    }
+// UTM sencillas para saber desde dónde llegó (opcional)
+const utm = 'utm_source=web&utm_medium=form&utm_campaign=wa';
 
-    .mapa {
-      margin-top: 30px;
-      border-radius: 10px;
-      overflow: hidden;
-    }
 
-    iframe {
-      width: 100%;
-      height: 300px;
-      border: 0;
-    }
+// Detectar si hay app instalada (solo pista básica)
+const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+const waUrl = `https://wa.me/${phoneE164.replace('+','')}?text=${msg}&${utm}`;
+const waApp = `whatsapp://send?phone=${phoneE164}&text=${msg}`;
 
-    .testimonios {
-      margin-top: 30px;
-      color: #fff;
-    }
 
-    .testimonio {
-      background: rgba(255, 255, 255, 0.1);
-      padding: 15px;
-      border-radius: 10px;
-      margin-bottom: 15px;
-    }
+// Intento abrir app primero en móvil
+let opened = false;
+if (isMobile) {
+try { window.location.href = waApp; opened = true; } catch(e) {}
+}
+if (!opened) {
+window.open(waUrl, '_blank', 'noopener');
+}
 
-    .floating-whatsapp {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background-color: #25D366;
-      color: white;
-      padding: 15px;
-      border-radius: 50%;
-      text-decoration: none;
-      font-size: 24px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.5);
-      z-index: 1000;
-    }
-  </style>
-</head>
-<body>
-  <div class="overlay">
-    <h1>Grúas César</h1>
-    <p>Servicio rápido 24/7 en Barcelona y alrededores</p>
-    <ul class="services">
-      <li>Extracciones de parking</li>
-      <li>Cambios de batería</li>
-      <li>Reparación de pinchazos</li>
-      <li>Traslado de vehículos dentro y fuera de Barcelona</li>
-    </ul>
-    <div class="phone">WhatsApp: 633 078 354</div>
 
-    <div class="buttons">
-      <a class="whatsapp" href="https://wa.me/34633078354" target="_blank">Enviar WhatsApp</a>
-      <a class="call" href="tel:+34633078354">Llamar ahora</a>
-    </div>
-
-    <div class="formulario">
-      <h2>Solicita Asistencia</h2>
-      <form>
-        <input type="text" placeholder="Tu nombre" required />
-        <input type="tel" placeholder="Tu teléfono" required />
-        <textarea placeholder="¿Dónde necesitas la grúa?" required></textarea>
-        <button type="submit">Enviar</button>
-      </form>
-    </div>
-
-    <div class="testimonios">
-      <h2>Testimonios</h2>
-      <div class="testimonio">
-        ⭐⭐⭐⭐⭐ “Rápido y muy profesional. ¡Gracias Grúas César!” – Laura G.
-      </div>
-      <div class="testimonio">
-        ⭐⭐⭐⭐⭐ “Llegaron en menos de 15 minutos. Servicio excelente.” – Javier R.
-      </div>
-    </div>
-
-    <div class="mapa">
-      <h2 style="margin-bottom: 10px;">Cobertura en Barcelona</h2>
-      <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2993.0598336939326!2d2.173403376517833!3d41.38506397129557!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12a4a2fbb3dba5ff%3A0x400fae02160fc10!2sBarcelona!5e0!3m2!1ses!2ses!4v1713785192801!5m2!1ses!2ses" allowfullscreen=""></iframe>
-    </div>
-  </div>
-
-  <a href="https://wa.me/34633078354" class="floating-whatsapp" target="_blank">💬</a>
+setTimeout(()=>{
+submitBtn.disabled = false;
+submitBtn.textContent = '💬 Enviar por WhatsApp';
+}, 1500);
+});
+</script>
 </body>
 </html>
-
