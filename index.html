@@ -1,78 +1,328 @@
 <!DOCTYPE html>
-});
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Grúas César — Asistencia 24/7 en Barcelona</title>
+  
+  <!-- SEO básico -->
+  <meta name="description" content="Grúas César. Asistencia en carretera 24/7 en Barcelona: extracciones de parking, cambios de batería, pinchazos y traslados. Respuesta inmediata por WhatsApp o llamada." />
+  <link rel="icon" href="/favicon.ico" />
+  <meta property="og:title" content="Grúas César — Asistencia 24/7 en Barcelona" />
+  <meta property="og:description" content="Servicio rápido y profesional. Escríbenos por WhatsApp y vamos al momento." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="/og-gruas-cesar.webp" />
+  <meta name="theme-color" content="#0ea5e9" />
 
+  <!-- Schema.org LocalBusiness -->
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"AutomotiveBusiness",
+    "name":"Grúas César",
+    "areaServed":"Barcelona",
+    "url":"https://tu-dominio.com",
+    "telephone":"+34633078354",
+    "image":"https://tu-dominio.com/og-gruas-cesar.webp",
+    "openingHours":"Mo-Su 00:00-23:59",
+    "address":{
+      "@type":"PostalAddress",
+      "addressLocality":"Barcelona",
+      "addressCountry":"ES"
+    },
+    "sameAs":["https://wa.me/34633078354"]
+  }
+  </script>
 
-// Formulario -> WhatsApp
-const form = document.getElementById('asistenciaForm');
-form.addEventListener('submit', (e) => {
-e.preventDefault();
-const submitBtn = document.getElementById('enviarBtn');
+  <style>
+    :root{
+      --bg-dark: #0b1220;
+      --primary: #0ea5e9; /* sky-500 */
+      --primary-2: #38bdf8; /* sky-400 */
+      --accent: #22c55e; /* green-500 */
+      --warning: #eab308; /* yellow-500 */
+      --card: rgba(255,255,255,0.06);
+      --muted: rgba(255,255,255,0.75);
+    }
 
+    *{ box-sizing: border-box; }
+    html,body{ height: 100%; }
+    body{
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      background: var(--bg-dark) url('fondo-gruas-cesar.webp') center/cover no-repeat fixed;
+      color: white;
+    }
 
-// Honeypot
-if (document.getElementById('empresa').value){ return; }
+    .backdrop{ 
+      backdrop-filter: saturate(120%) blur(2px);
+      background: linear-gradient(180deg, rgba(0,0,0,0.6), rgba(0,0,0,0.7));
+      min-height: 100dvh; 
+      padding: clamp(16px, 3vw, 32px);
+    }
 
+    .container{ 
+      max-width: 980px; margin: 0 auto; 
+    }
 
-// Validación simple
-if (!form.checkValidity()){
-estado.textContent = 'Revisa los campos obligatorios.';
-form.reportValidity();
-return;
-}
+    header{
+      display: grid; gap: 8px; text-align: center; margin-bottom: 16px;
+    }
+    header h1{ font-size: clamp(28px, 5vw, 44px); letter-spacing: .5px; }
+    header p{ color: var(--muted); font-size: clamp(16px, 2.6vw, 18px); }
 
+    .grid{ display: grid; gap: 16px; grid-template-columns: 1fr; }
+    @media (min-width: 880px){ .grid{ grid-template-columns: 1.2fr .8fr; } }
 
-submitBtn.disabled = true;
-submitBtn.textContent = 'Abriendo WhatsApp…';
+    .card{ background: var(--card); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: clamp(16px,2.5vw,24px); box-shadow: 0 8px 30px rgba(0,0,0,.25); }
 
+    .badge{ display:inline-flex; align-items:center; gap:8px; padding:6px 10px; border-radius:999px; font-weight:600; background: rgba(56,189,248,0.12); color: var(--primary-2); }
 
-const servicio = form.servicio.value;
-const nombre = linea(form.nombre.value);
-const telefono = linea(form.telefono.value);
-const matricula = linea(form.matricula.value);
-const vehiculo = linea(form.vehiculo.value);
-const ubicacion = linea(form.ubicacion.value);
-const detalles = linea(form.detalles.value);
+    ul.services{ list-style: none; margin: 12px 0 0; padding: 0; }
+    ul.services li{ display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius: 12px; background: rgba(255,255,255,0.04); margin-bottom:10px; }
+    ul.services li::before{ content:"🚚"; }
 
+    .cta-row{ display:flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+    .btn{ appearance: none; text-decoration:none; border:0; cursor: pointer; font-weight:700; border-radius: 12px; padding: 12px 16px; display:inline-flex; align-items:center; gap:10px; }
+    .btn.whatsapp{ background:#25D366; color:#071b12; }
+    .btn.call{ background:#3b82f6; }
+    .btn.map{ background:#0ea5e9; }
 
-// Mensaje
-let msg = `Hola Grúas César, necesito *${servicio}*.%0A`;
-if (ubicacion) msg += `%0A📍 Ubicación: ${encodeURIComponent(ubicacion)}%0A`;
-if (gps) {
-const gmaps = `https://maps.google.com/?q=${gps.lat},${gps.lng}`;
-msg += `📡 GPS: ${encodeURIComponent(gmaps)} (±${gps.acc}m)%0A`;
-}
-if (matricula) msg += `🚘 Matrícula: ${encodeURIComponent(matricula)}%0A`;
-if (vehiculo) msg += `🔎 Modelo: ${encodeURIComponent(vehiculo)}%0A`;
-if (detalles) msg += `📝 Detalles: ${encodeURIComponent(detalles)}%0A`;
-if (nombre) msg += `%0A👤 Nombre: ${encodeURIComponent(nombre)}`;
-if (telefono) msg += `%0A📞 Tel: ${encodeURIComponent(telefono)}`;
+    .phone{ font-size: clamp(18px, 3.5vw, 22px); margin-top: 8px; color: #fef08a; font-weight: 700; }
 
+    /* Form */
+    form{ display:grid; grid-template-columns: 1fr 1fr; gap:12px; }
+    form .full{ grid-column: 1/-1; }
+    label{ font-size: 14px; color: var(--muted); display:block; margin: 4px 0; }
+    input, select, textarea{ width:100%; border:1px solid rgba(255,255,255,0.14); background: rgba(0,0,0,0.35); color:white; border-radius:10px; padding:12px; font-size:16px; outline: none; }
+    textarea{ min-height: 96px; resize: vertical; }
+    .small{ font-size: 12px; color: var(--muted); }
 
-// UTM sencillas para saber desde dónde llegó (opcional)
-const utm = 'utm_source=web&utm_medium=form&utm_campaign=wa';
+    .actions{ display:flex; gap:10px; align-items:center; flex-wrap: wrap; }
+    .submit{ background: var(--primary); color: #03131a; font-weight:800; }
+    .ghost{ background: transparent; border:1px dashed rgba(255,255,255,0.25); color: white; }
 
+    .floating-whatsapp{ position: fixed; right: 16px; bottom: 16px; background: #25D366; color:#03131a; border-radius: 999px; padding: 12px 14px; font-size: 22px; text-decoration: none; box-shadow: 0 8px 28px rgba(0,0,0,.45); animation: pulse 1.8s infinite; z-index: 50; }
+    @keyframes pulse{ 0%{ transform: scale(1);} 50%{ transform: scale(1.08);} 100%{ transform: scale(1);} }
 
-// Detectar si hay app instalada (solo pista básica)
-const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-const waUrl = `https://wa.me/${phoneE164.replace('+','')}?text=${msg}&${utm}`;
-const waApp = `whatsapp://send?phone=${phoneE164}&text=${msg}`;
+    /* Testimonios */
+    .testimonios h2{ margin: 4px 0 10px; }
+    .testimonio{ background: rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 12px; margin: 8px 0; }
 
+    /* Mapa */
+    iframe{ width: 100%; height: 300px; border: 0; border-radius: 12px; }
 
-// Intento abrir app primero en móvil
-let opened = false;
-if (isMobile) {
-try { window.location.href = waApp; opened = true; } catch(e) {}
-}
-if (!opened) {
-window.open(waUrl, '_blank', 'noopener');
-}
+    /* Responsivo */
+    @media (max-width: 720px){
+      form{ grid-template-columns: 1fr; }
+      .cta-row{ flex-direction: column; }
+      .btn{ justify-content: center; width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="backdrop">
+    <div class="container">
+      <header>
+        <span class="badge">⏱️ 24/7 · Respuesta inmediata</span>
+        <h1>Grúas César</h1>
+        <p>Servicio rápido y profesional en Barcelona y alrededores. Escríbenos por WhatsApp y vamos al momento.</p>
+        <div class="phone">WhatsApp: <a href="https://wa.me/34633078354" class="link" style="color:#fef08a">633 078 354</a></div>
+        <div class="cta-row">
+          <a class="btn whatsapp" href="https://wa.me/34633078354?text=Hola%20Gr%C3%BAas%20C%C3%A9sar%2C%20necesito%20asistencia." target="_blank" rel="noopener">💬 Enviar WhatsApp</a>
+          <a class="btn call" href="tel:+34633078354">📞 Llamar ahora</a>
+          <a class="btn map" href="https://maps.google.com/?q=Barcelona" target="_blank" rel="noopener">📍 Ver cobertura</a>
+        </div>
+      </header>
 
+      <div class="grid">
+        <!-- Columna izquierda: Servicios + Testimonios + Mapa -->
+        <section class="card">
+          <h2>Servicios</h2>
+          <ul class="services">
+            <li>Extracciones de parking</li>
+            <li>Cambios de batería (AGM/EFB y convencionales)</li>
+            <li>Reparación de pinchazos</li>
+            <li>Traslado de vehículos dentro y fuera de Barcelona</li>
+          </ul>
 
-setTimeout(()=>{
-submitBtn.disabled = false;
-submitBtn.textContent = '💬 Enviar por WhatsApp';
-}, 1500);
-});
-</script>
+          <div class="testimonios">
+            <h2>Testimonios</h2>
+            <div class="testimonio">⭐⭐⭐⭐⭐ “Rápido y muy profesional. ¡Gracias Grúas César!” – Laura G.</div>
+            <div class="testimonio">⭐⭐⭐⭐⭐ “Llegaron en menos de 15 minutos. Servicio excelente.” – Javier R.</div>
+          </div>
+
+          <div class="mapa" style="margin-top: 16px;">
+            <h2 style="margin: 6px 0 10px;">Cobertura en Barcelona</h2>
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2993.0598336939326!2d2.173403376517833!3d41.38506397129557!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12a4a2fbb3dba5ff%3A0x400fae02160fc10!2sBarcelona!5e0!3m2!1ses!2ses!4v1713785192801!5m2!1ses!2ses" allowfullscreen=""></iframe>
+          </div>
+        </section>
+
+        <!-- Columna derecha: Formulario -->
+        <section class="card">
+          <h2 style="margin-top:0">Solicita asistencia por WhatsApp</h2>
+          <p class="small">Completa el formulario y se abrirá WhatsApp con tu mensaje listo para enviar. Si lo permites, añadimos tu ubicación GPS.</p>
+
+          <form id="asistenciaForm" novalidate>
+            <!-- Honeypot anti-spam -->
+            <input type="text" name="empresa" id="empresa" style="display:none" tabindex="-1" autocomplete="off" />
+
+            <div class="full">
+              <label for="servicio">¿Qué necesitas?</label>
+              <select id="servicio" name="servicio" required>
+                <option value="" disabled selected>Selecciona un servicio</option>
+                <option>Extracción de parking</option>
+                <option>Cambio de batería</option>
+                <option>Pinchazo / rueda</option>
+                <option>Traslado de vehículo</option>
+                <option>Arranque con pinzas</option>
+                <option>Otro</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="nombre">Tu nombre</label>
+              <input type="text" id="nombre" name="nombre" placeholder="Ej. Carlos" required />
+            </div>
+
+            <div>
+              <label for="telefono">Tu teléfono</label>
+              <input type="tel" id="telefono" name="telefono" inputmode="tel" placeholder="Ej. 633 078 354" pattern="^(\\+?34)? ?[6-9]\\d{2} ?\\d{3} ?\\d{3}$" required />
+            </div>
+
+            <div>
+              <label for="matricula">Matrícula (opcional)</label>
+              <input type="text" id="matricula" name="matricula" placeholder="Ej. 1234-ABC" />
+            </div>
+
+            <div>
+              <label for="vehiculo">Modelo (opcional)</label>
+              <input type="text" id="vehiculo" name="vehiculo" placeholder="Marca y modelo" />
+            </div>
+
+            <div class="full">
+              <label for="ubicacion">¿Dónde necesitas la grúa?</label>
+              <input type="text" id="ubicacion" name="ubicacion" placeholder="Dirección exacta o punto de referencia" required />
+            </div>
+
+            <div class="full">
+              <label for="detalles">Detalles (opcional)</label>
+              <textarea id="detalles" name="detalles" placeholder="Ej. Altura 2,00 m, coche automático, rueda derecha pinchada, etc."></textarea>
+            </div>
+
+            <div class="full actions">
+              <button type="submit" class="btn submit" id="enviarBtn">💬 Enviar por WhatsApp</button>
+              <button type="button" class="btn ghost" id="gpsBtn">📍 Añadir mi ubicación</button>
+              <span id="estado" class="small"></span>
+            </div>
+
+            <p class="small full">Al continuar se abrirá WhatsApp con tu mensaje prellenado. Podrás añadir fotos del vehículo o la ubicación directamente en el chat.</p>
+          </form>
+        </section>
+      </div>
+
+      <footer style="opacity:.85; margin-top: 20px; text-align:center" class="small">
+        © <span id="year"></span> Grúas César · Barcelona · <a href="tel:+34633078354" style="color:#a5f3fc">+34 633 078 354</a>
+      </footer>
+    </div>
+  </div>
+
+  <a href="https://wa.me/34633078354" class="floating-whatsapp" target="_blank" rel="noopener" aria-label="Abrir WhatsApp">💬</a>
+
+  <script>
+    // Año dinámico
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Helpers
+    const phoneE164 = '+34633078354';
+    const linea = s => (s && String(s).trim().length) ? s.trim() : null;
+
+    // Geolocalización
+    let gps = null; // { lat, lng, accuracy }
+    const gpsBtn = document.getElementById('gpsBtn');
+    const estado = document.getElementById('estado');
+
+    gpsBtn.addEventListener('click', () => {
+      estado.textContent = 'Solicitando ubicación…';
+      if (!navigator.geolocation){
+        estado.textContent = 'Tu navegador no soporta GPS.';
+        return;
+      }
+      navigator.geolocation.getCurrentPosition((pos)=>{
+        gps = {
+          lat: pos.coords.latitude.toFixed(6),
+          lng: pos.coords.longitude.toFixed(6),
+          acc: Math.round(pos.coords.accuracy)
+        };
+        estado.textContent = `Ubicación añadida (±${gps.acc} m)`;
+      }, (err)=>{
+        console.warn(err);
+        estado.textContent = 'No pudimos obtener tu ubicación.';
+      }, { enableHighAccuracy: true, timeout: 8000, maximumAge: 0 });
+    });
+
+    // Formulario -> WhatsApp
+    const form = document.getElementById('asistenciaForm');
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const submitBtn = document.getElementById('enviarBtn');
+
+      // Honeypot
+      if (document.getElementById('empresa').value){ return; }
+
+      // Validación simple
+      if (!form.checkValidity()){
+        estado.textContent = 'Revisa los campos obligatorios.';
+        form.reportValidity();
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Abriendo WhatsApp…';
+
+      const servicio = form.servicio.value;
+      const nombre = linea(form.nombre.value);
+      const telefono = linea(form.telefono.value);
+      const matricula = linea(form.matricula.value);
+      const vehiculo = linea(form.vehiculo.value);
+      const ubicacion = linea(form.ubicacion.value);
+      const detalles = linea(form.detalles.value);
+
+      // Mensaje
+      let msg = `Hola Grúas César, necesito *${servicio}*.%0A`;
+      if (ubicacion) msg += `%0A📍 Ubicación: ${encodeURIComponent(ubicacion)}%0A`;
+      if (gps) {
+        const gmaps = `https://maps.google.com/?q=${gps.lat},${gps.lng}`;
+        msg += `📡 GPS: ${encodeURIComponent(gmaps)} (±${gps.acc}m)%0A`;
+      }
+      if (matricula) msg += `🚘 Matrícula: ${encodeURIComponent(matricula)}%0A`;
+      if (vehiculo) msg += `🔎 Modelo: ${encodeURIComponent(vehiculo)}%0A`;
+      if (detalles) msg += `📝 Detalles: ${encodeURIComponent(detalles)}%0A`;
+      if (nombre) msg += `%0A👤 Nombre: ${encodeURIComponent(nombre)}`;
+      if (telefono) msg += `%0A📞 Tel: ${encodeURIComponent(telefono)}`;
+
+      // UTM sencillas para saber desde dónde llegó (opcional)
+      const utm = 'utm_source=web&utm_medium=form&utm_campaign=wa';
+
+      // Detectar si hay app instalada (solo pista básica)
+      const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+      const waUrl = `https://wa.me/${phoneE164.replace('+','')}?text=${msg}&${utm}`;
+      const waApp = `whatsapp://send?phone=${phoneE164}&text=${msg}`;
+
+      // Intento abrir app primero en móvil
+      let opened = false;
+      if (isMobile) {
+        try { window.location.href = waApp; opened = true; } catch(e) {}
+      }
+      if (!opened) {
+        window.open(waUrl, '_blank', 'noopener');
+      }
+
+      setTimeout(()=>{
+        submitBtn.disabled = false;
+        submitBtn.textContent = '💬 Enviar por WhatsApp';
+      }, 1500);
+    });
+  </script>
 </body>
 </html>
