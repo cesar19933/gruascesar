@@ -1,183 +1,401 @@
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-  const PHONE_E164 = '+34633078354';
-  const PHONE_DIGITS = PHONE_E164.replace('+','');
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Grúas César — Asistencia 24/7 en Barcelona</title>
 
-  const linea = v => (v && String(v).trim()) ? String(v).trim() : null;
+  <meta name="description" content="Grúas César. Asistencia en carretera 24/7 en Barcelona: extracciones de parking, cambios de batería, pinchazos y traslados. Respuesta inmediata por WhatsApp o llamada." />
+  <meta name="theme-color" content="#0ea5e9" />
 
-  function normalizarTelefono(valor){
-    let n = String(valor || '').replace(/[^0-9+]/g,'').trim();
-    if (!n) return '';
-    if (n.startsWith('00')) n = '+' + n.slice(2);
-    if (n.startsWith('+')) {
+  <!-- Google Ads -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=AW-11068280759"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'AW-11068280759');
+  </script>
+
+  <style>
+    :root{
+      --bg-dark:#0b1220;
+      --primary:#0ea5e9;
+      --primary-2:#38bdf8;
+      --card:rgba(255,255,255,0.06);
+      --muted:rgba(255,255,255,0.75);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Helvetica,Arial;
+      background: var(--bg-dark) url('fondo-gruas-cesar.png') center/cover no-repeat fixed;
+      color:#fff;
+    }
+    @media (max-width:720px){ body{background-attachment:scroll} }
+
+    .backdrop{
+      backdrop-filter:saturate(120%) blur(2px);
+      background: linear-gradient(180deg, rgba(0,0,0,0.6), rgba(0,0,0,0.72));
+      min-height:100dvh;
+      padding:clamp(16px,3vw,32px);
+    }
+    .container{max-width:980px;margin:0 auto}
+
+    header{display:grid;gap:8px;text-align:center;margin-bottom:16px}
+    header h1{font-size:clamp(28px,5vw,44px);letter-spacing:.5px;margin:0}
+    header p{color:var(--muted);font-size:clamp(16px,2.6vw,18px);margin:0}
+
+    .badge{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:6px 10px;border-radius:999px;font-weight:700;
+      background:rgba(56,189,248,0.12);color:var(--primary-2);
+      justify-self:center;
+    }
+
+    .grid{display:grid;gap:16px;grid-template-columns:1fr}
+    @media (min-width:880px){ .grid{grid-template-columns:1.2fr .8fr} }
+
+    .card{
+      background:var(--card);
+      border:1px solid rgba(255,255,255,0.08);
+      border-radius:16px;
+      padding:clamp(16px,2.5vw,24px);
+      box-shadow:0 8px 30px rgba(0,0,0,.25);
+    }
+
+    .cta-row{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:12px}
+    .btn{
+      appearance:none;border:0;cursor:pointer;
+      text-decoration:none;font-weight:800;
+      border-radius:12px;padding:12px 16px;
+      display:inline-flex;align-items:center;gap:10px;
+      color:#fff;
+    }
+    .btn.whatsapp{background:#25D366;color:#071b12}
+    .btn.call{background:#3b82f6}
+    .btn.map{background:#0ea5e9}
+
+    .phone{font-size:clamp(18px,3.5vw,22px);margin-top:8px;color:#fef08a;font-weight:800}
+
+    ul.services{list-style:none;margin:12px 0 0;padding:0}
+    ul.services li{
+      display:flex;align-items:center;gap:10px;
+      padding:10px 12px;border-radius:12px;
+      background:rgba(255,255,255,0.04);margin-bottom:10px;
+    }
+
+    form{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    form .full{grid-column:1/-1}
+    label{font-size:14px;color:var(--muted);display:block;margin:4px 0}
+    input,select,textarea{
+      width:100%;
+      border:1px solid rgba(255,255,255,0.14);
+      background:rgba(0,0,0,0.35);
+      color:#fff;border-radius:10px;
+      padding:12px;font-size:16px;outline:none;
+    }
+    textarea{min-height:96px;resize:vertical}
+    .small{font-size:12px;color:var(--muted)}
+    .actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    .submit{background:var(--primary);color:#03131a;font-weight:900}
+    .ghost{background:transparent;border:1px dashed rgba(255,255,255,0.25);color:#fff}
+
+    iframe{width:100%;height:300px;border:0;border-radius:12px}
+
+    @media (max-width:720px){
+      form{grid-template-columns:1fr}
+      .cta-row{flex-direction:column}
+      .btn{justify-content:center;width:100%}
+    }
+
+    .floating-whatsapp{
+      position:fixed;right:16px;bottom:16px;
+      background:#25D366;color:#03131a;
+      border-radius:999px;padding:12px 14px;
+      font-size:22px;text-decoration:none;
+      box-shadow:0 8px 28px rgba(0,0,0,.45);
+      animation:pulse 1.8s infinite;
+      z-index:50;
+    }
+    @keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.08)}100%{transform:scale(1)}}
+
+    .floating-logo{
+      position:fixed;right:16px;bottom:92px;
+      width:120px;max-width:38vw;
+      z-index:45;pointer-events:none;
+      filter:drop-shadow(0 10px 28px rgba(0,0,0,.55));
+    }
+    @media (max-width:480px){ .floating-logo{width:90px;bottom:88px} }
+  </style>
+</head>
+
+<body>
+  <div class="backdrop">
+    <div class="container">
+
+      <header>
+        <span class="badge">⏱️ 24/7 · Respuesta inmediata</span>
+        <h1>Grúas César</h1>
+        <p>Servicio rápido y profesional en Barcelona y alrededores. Escríbenos por WhatsApp y vamos al momento.</p>
+
+        <div class="phone">
+          WhatsApp:
+          <a href="https://wa.me/34633078354" style="color:#fef08a">633 078 354</a>
+        </div>
+
+        <div class="cta-row">
+          <a class="btn whatsapp" href="https://wa.me/34633078354?text=Hola%20Gr%C3%BAas%20C%C3%A9sar%2C%20necesito%20asistencia." target="_blank" rel="noopener">💬 Enviar WhatsApp</a>
+          <a class="btn call" href="tel:+34633078354">📞 Llamar ahora</a>
+          <a class="btn map" href="https://www.google.com/maps/search/?api=1&query=Barcelona,+Baix+Llobregat,+Sant+Cugat" target="_blank" rel="noopener">📍 Ver cobertura</a>
+        </div>
+      </header>
+
+      <main class="grid">
+        <section class="card">
+          <h2>Servicios</h2>
+          <ul class="services" id="servicesList"></ul>
+
+          <div style="margin-top:16px">
+            <h2 style="margin:6px 0 10px;">Cobertura en Barcelona</h2>
+            <iframe loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2993.0598336939326!2d2.173403376517833!3d41.38506397129557!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12a4a2fbb3dba5ff%3A0x400fae02160fc10!2sBarcelona!5e0!3m2!1ses!2ses!4v1713785192801!5m2!1ses!2ses"
+              allowfullscreen></iframe>
+          </div>
+        </section>
+
+        <section class="card">
+          <h2 style="margin-top:0">Solicita asistencia por WhatsApp</h2>
+          <p class="small">Completa el formulario y se abrirá WhatsApp con tu mensaje listo. Si lo permites, añadimos tu ubicación GPS.</p>
+
+          <form id="asistenciaForm" novalidate>
+            <input type="text" name="empresa" id="empresa" style="display:none" tabindex="-1" autocomplete="off" />
+
+            <div class="full">
+              <label for="servicio">¿Qué necesitas?</label>
+              <select id="servicio" name="servicio" required></select>
+            </div>
+
+            <div>
+              <label for="nombre">Tu nombre</label>
+              <input type="text" id="nombre" name="nombre" placeholder="Ej. Carlos" autocomplete="name" required />
+            </div>
+
+            <div>
+              <label for="telefono">Tu teléfono</label>
+              <input type="tel" id="telefono" name="telefono" inputmode="tel" autocomplete="tel" placeholder="Ej. +34 633 078 354" required />
+            </div>
+
+            <div>
+              <label for="matricula">Matrícula (opcional)</label>
+              <input type="text" id="matricula" name="matricula" placeholder="Ej. 1234-ABC" />
+            </div>
+
+            <div>
+              <label for="vehiculo">Modelo (opcional)</label>
+              <input type="text" id="vehiculo" name="vehiculo" placeholder="Marca y modelo" />
+            </div>
+
+            <div class="full">
+              <label for="ubicacion">¿Dónde necesitas la grúa?</label>
+              <input type="text" id="ubicacion" name="ubicacion" placeholder="Dirección exacta o punto de referencia" autocomplete="street-address" required />
+            </div>
+
+            <div class="full">
+              <label for="detalles">Detalles (opcional)</label>
+              <textarea id="detalles" name="detalles" placeholder="Ej. Altura 2,00 m, coche automático, rueda derecha pinchada, etc."></textarea>
+            </div>
+
+            <div class="full actions">
+              <button type="submit" class="btn submit" id="enviarBtn">💬 Enviar por WhatsApp</button>
+              <button type="button" class="btn ghost" id="gpsBtn">📍 Añadir mi ubicación</button>
+              <span id="estado" class="small" role="status" aria-live="polite"></span>
+            </div>
+          </form>
+        </section>
+      </main>
+
+      <footer style="opacity:.85; margin-top:20px; text-align:center" class="small">
+        © <span id="year"></span> Grúas César · Barcelona · <a href="tel:+34633078354" style="color:#a5f3fc">+34 633 078 354</a>
+      </footer>
+
+    </div>
+  </div>
+
+  <a href="https://wa.me/34633078354" class="floating-whatsapp" target="_blank" rel="noopener" aria-label="Abrir WhatsApp">💬</a>
+  <img src="logo-gruas-cesar.webp" alt="Grúas César" class="floating-logo" loading="lazy" />
+
+  <script>
+  // SCRIPT BLINDADO (NO DEJA LA PÁGINA EN BLANCO)
+  document.addEventListener('DOMContentLoaded', () => {
+    const PHONE_E164 = '+34633078354';
+    const PHONE_DIGITS = PHONE_E164.replace('+','');
+
+    const $ = (s) => document.querySelector(s);
+    const linea = v => (v && String(v).trim()) ? String(v).trim() : null;
+
+    function setEstado(msg){ const e = $('#estado'); if (e) e.textContent = msg || ''; }
+
+    function normalizarTelefono(valor){
+      let n = String(valor || '').replace(/[^0-9+]/g,'').trim();
+      if (!n) return '';
+      if (n.startsWith('00')) n = '+' + n.slice(2);
+      if (n.startsWith('+')) {
+        const d = n.replace(/[^\d]/g,'');
+        return d ? '+' + d : '';
+      }
+      if (/^[6-9]\d{8}$/.test(n)) return '+34' + n;
+      if (n.startsWith('34') && n.length >= 11) return '+' + n;
       const d = n.replace(/[^\d]/g,'');
       return d ? '+' + d : '';
     }
-    if (/^[6-9]\d{8}$/.test(n)) return '+34' + n;
-    if (n.startsWith('34') && n.length >= 11) return '+' + n;
-    const d = n.replace(/[^\d]/g,'');
-    return d ? '+' + d : '';
-  }
 
-  // Año dinámico (sin crashear)
-  const yearEl = document.getElementById('year');
-  if (yearEl) yearEl.textContent = new Date().getFullYear();
+    const yearEl = $('#year');
+    if (yearEl) yearEl.textContent = new Date().getFullYear();
 
-  // GEO
-  let gps = null;
-  const gpsBtn = document.getElementById('gpsBtn');
-  const estado = document.getElementById('estado');
+    // Servicios
+    const SERVICES = [
+      { text:"Extracción de parking", icon:"🚚" },
+      { text:"Cambio de batería (AGM/EFB y convencionales)", icon:"🔋" },
+      { text:"Pinchazo / rueda", icon:"🛞" },
+      { text:"Arranque con pinzas", icon:"⚡" },
+      { text:"Traslado de vehículos y motos", icon:"🚗🏍️" },
+      { text:"Traslado de larga distancia", icon:"🛣️" },
+      { text:"Apertura de vehículo (puertas cerradas)", icon:"🔑" },
+      { text:"Suministro de combustible", icon:"⛽" },
+      { text:"Asistencia a motos", icon:"🏍️" },
+      { text:"Rescate fuera de vía", icon:"🆘" },
+      { text:"Vehículo alto (+2,10 m)", icon:"📏" },
+      { text:"Otro", icon:"❓" }
+    ];
 
-  function setEstado(msg){
-    if (estado) estado.textContent = msg || '';
-  }
+    const select = $('#servicio');
+    const ul = $('#servicesList');
+    if (select && ul){
+      select.innerHTML = '';
+      const ph = document.createElement('option');
+      ph.value = '';
+      ph.disabled = true;
+      ph.selected = true;
+      ph.textContent = 'Selecciona un servicio';
+      select.appendChild(ph);
 
-  if (gpsBtn){
-    gpsBtn.addEventListener('click', () => {
-      setEstado('Solicitando ubicación…');
-      if (!navigator.geolocation){
-        setEstado('Tu navegador no soporta GPS.');
-        return;
-      }
-      navigator.geolocation.getCurrentPosition(
-        pos => {
-          gps = {
-            lat: pos.coords.latitude.toFixed(6),
-            lng: pos.coords.longitude.toFixed(6),
-            acc: Math.round(pos.coords.accuracy)
-          };
-          setEstado(`Ubicación añadida (±${gps.acc} m)`);
-        },
-        () => setEstado('No se pudo obtener la ubicación.'),
-        { enableHighAccuracy:true, timeout:8000, maximumAge:0 }
-      );
-    });
-  }
+      SERVICES.forEach(s => {
+        const o = document.createElement('option');
+        o.value = s.text;
+        o.textContent = s.text;
+        select.appendChild(o);
+      });
 
-  // SERVICIOS
-  const SERVICES = [
-    { text:"Extracción de parking", icon:"🚚" },
-    { text:"Cambio de batería (AGM/EFB y convencionales)", icon:"🔋" },
-    { text:"Pinchazo / rueda", icon:"🛞" },
-    { text:"Arranque con pinzas", icon:"⚡" },
-    { text:"Traslado de vehículos y motos", icon:"🚗🏍️" },
-    { text:"Traslado de larga distancia", icon:"🛣️" },
-    { text:"Apertura de vehículo (puertas cerradas)", icon:"🔑" },
-    { text:"Suministro de combustible", icon:"⛽" },
-    { text:"Asistencia a motos", icon:"🏍️" },
-    { text:"Rescate fuera de vía", icon:"🆘" },
-    { text:"Vehículo alto (+2,10 m)", icon:"📏" },
-    { text:"Otro", icon:"❓" }
-  ];
+      ul.innerHTML = '';
+      SERVICES.filter(s => s.text !== 'Otro').forEach(s => {
+        const li = document.createElement('li');
+        li.textContent = `${s.icon} ${s.text}`;
+        ul.appendChild(li);
+      });
+    }
 
-  const select = document.getElementById('servicio');
-  const ul = document.querySelector('ul.services') || document.getElementById('servicesList');
-
-  if (select && ul){
-    select.innerHTML = '';
-    const ph = document.createElement('option');
-    ph.value = '';
-    ph.disabled = true;
-    ph.selected = true;
-    ph.textContent = 'Selecciona un servicio';
-    select.appendChild(ph);
-
-    SERVICES.forEach(s=>{
-      const o = document.createElement('option');
-      o.value = s.text;
-      o.textContent = s.text;
-      select.appendChild(o);
-    });
-
-    ul.innerHTML = '';
-    SERVICES.filter(s=>s.text!=='Otro').forEach(s=>{
-      const li = document.createElement('li');
-      li.textContent = `${s.icon} ${s.text}`;
-      ul.appendChild(li);
-    });
-  }
-
-  // MENSAJE
-  function buildMessage(data){
-    const l = [];
-    l.push(`Hola Grúas César, necesito *${data.servicio}*.`);
-    l.push('');
-    if (data.ubicacion) l.push(`📍 Ubicación: ${data.ubicacion}`);
-    if (data.gps) l.push(`📡 GPS: https://maps.google.com/?q=${data.gps.lat},${data.gps.lng} (±${data.gps.acc}m)`);
-    if (data.matricula) l.push(`🚘 Matrícula: ${data.matricula}`);
-    if (data.vehiculo) l.push(`🔎 Modelo: ${data.vehiculo}`);
-    if (data.detalles) l.push(`📝 Detalles: ${data.detalles}`);
-    l.push('');
-    if (data.nombre) l.push(`👤 Nombre: ${data.nombre}`);
-    if (data.tel) l.push(`📞 Tel: ${data.tel}`);
-    return l.join('\\n');
-  }
-
-  // FORM
-  const form = document.getElementById('asistenciaForm');
-  const telInput = document.getElementById('telefono');
-
-  if (telInput){
-    telInput.addEventListener('input',()=>{
-      telInput.value = telInput.value.replace(/[^0-9+]/g,'');
-    });
-  }
-
-  if (form){
-    form.addEventListener('submit', e=>{
-      e.preventDefault();
-      const btn = document.getElementById('enviarBtn');
-
-      if (document.getElementById('empresa')?.value) return;
-
-      if (!form.checkValidity()){
-        setEstado('Revisa los campos obligatorios.');
-        form.reportValidity();
-        return;
-      }
-
-      const tel = normalizarTelefono(form.telefono.value);
-      if (!/^\+\d{8,15}$/.test(tel)){
-        setEstado('Teléfono no válido. Ej: +34633078354');
-        telInput?.focus();
-        return;
-      }
-
-      if (btn){
-        btn.disabled = true;
-        btn.textContent = 'Abriendo WhatsApp…';
-      }
-
-      const data = {
-        servicio: form.servicio.value,
-        nombre: linea(form.nombre.value),
-        ubicacion: linea(form.ubicacion.value),
-        matricula: linea(form.matricula.value),
-        vehiculo: linea(form.vehiculo.value),
-        detalles: linea(form.detalles.value),
-        gps,
-        tel
-      };
-
-      const textEncoded = encodeURIComponent(buildMessage(data));
-      const waWeb = `https://wa.me/${PHONE_DIGITS}?text=${textEncoded}&utm_source=web&utm_medium=form&utm_campaign=wa`;
-      const waApp = `whatsapp://send?phone=${PHONE_E164}&text=${textEncoded}`;
-
-      const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-      if (isMobile){
-        window.location.href = waApp;
-        setTimeout(()=>window.open(waWeb,'_blank','noopener'),700);
-      } else {
-        window.open(waWeb,'_blank','noopener');
-      }
-
-      setTimeout(()=>{
-        if (btn){
-          btn.disabled = false;
-          btn.textContent = '💬 Enviar por WhatsApp';
+    // GPS
+    let gps = null;
+    const gpsBtn = $('#gpsBtn');
+    if (gpsBtn){
+      gpsBtn.addEventListener('click', () => {
+        setEstado('Solicitando ubicación…');
+        if (!navigator.geolocation){
+          setEstado('Tu navegador no soporta GPS.');
+          return;
         }
-      },1500);
-    });
-  }
-});
-</script>
+        navigator.geolocation.getCurrentPosition(
+          pos => {
+            gps = {
+              lat: pos.coords.latitude.toFixed(6),
+              lng: pos.coords.longitude.toFixed(6),
+              acc: Math.round(pos.coords.accuracy)
+            };
+            setEstado(`Ubicación añadida (±${gps.acc} m)`);
+          },
+          () => setEstado('No se pudo obtener la ubicación.'),
+          { enableHighAccuracy:true, timeout:8000, maximumAge:0 }
+        );
+      });
+    }
+
+    function buildMessage(d){
+      const l = [];
+      l.push(`Hola Grúas César, necesito *${d.servicio}*.`);
+      l.push('');
+      if (d.ubicacion) l.push(`📍 Ubicación: ${d.ubicacion}`);
+      if (d.gps) l.push(`📡 GPS: https://maps.google.com/?q=${d.gps.lat},${d.gps.lng} (±${d.gps.acc}m)`);
+      if (d.matricula) l.push(`🚘 Matrícula: ${d.matricula}`);
+      if (d.vehiculo) l.push(`🔎 Modelo: ${d.vehiculo}`);
+      if (d.detalles) l.push(`📝 Detalles: ${d.detalles}`);
+      l.push('');
+      if (d.nombre) l.push(`👤 Nombre: ${d.nombre}`);
+      if (d.tel) l.push(`📞 Tel: ${d.tel}`);
+      return l.join('\\n');
+    }
+
+    const form = $('#asistenciaForm');
+    const telInput = $('#telefono');
+
+    if (telInput){
+      telInput.addEventListener('input', () => {
+        telInput.value = telInput.value.replace(/[^0-9+]/g,'');
+      });
+    }
+
+    if (form){
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        if ($('#empresa')?.value) return;
+
+        if (!form.checkValidity()){
+          setEstado('Revisa los campos obligatorios.');
+          form.reportValidity();
+          return;
+        }
+
+        const tel = normalizarTelefono(form.telefono.value);
+        if (!/^\+\d{8,15}$/.test(tel)){
+          setEstado('Teléfono no válido. Ej: +34633078354');
+          telInput?.focus();
+          return;
+        }
+
+        const btn = $('#enviarBtn');
+        if (btn){ btn.disabled = true; btn.textContent = 'Abriendo WhatsApp…'; }
+
+        const data = {
+          servicio: form.servicio.value,
+          nombre: linea(form.nombre.value),
+          ubicacion: linea(form.ubicacion.value),
+          matricula: linea(form.matricula.value),
+          vehiculo: linea(form.vehiculo.value),
+          detalles: linea(form.detalles.value),
+          gps,
+          tel
+        };
+
+        const msgEncoded = encodeURIComponent(buildMessage(data));
+        const waWeb = `https://wa.me/${PHONE_DIGITS}?text=${msgEncoded}&utm_source=web&utm_medium=form&utm_campaign=wa`;
+        const waApp = `whatsapp://send?phone=${PHONE_E164}&text=${msgEncoded}`;
+
+        const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+        if (isMobile){
+          window.location.href = waApp;
+          setTimeout(()=>window.open(waWeb,'_blank','noopener'),700);
+        } else {
+          window.open(waWeb,'_blank','noopener');
+        }
+
+        setTimeout(()=>{
+          if (btn){ btn.disabled = false; btn.textContent = '💬 Enviar por WhatsApp'; }
+        },1500);
+      });
+    }
+  });
+  </script>
+</body>
+</html>
