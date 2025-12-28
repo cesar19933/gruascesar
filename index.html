@@ -1,203 +1,168 @@
-<script>
-/* =========================
-   CONFIGURACIÓN
-========================= */
-const PHONE_E164 = '+34633078354';
-const PHONE_DIGITS = PHONE_E164.replace('+','');
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Grúas César — Asistencia 24/7 en Barcelona</title>
 
-/* =========================
-   UTILIDADES
-========================= */
-const linea = v => (v && String(v).trim()) ? String(v).trim() : null;
+  <meta name="description" content="Grúas César. Asistencia en carretera 24/7 en Barcelona: extracciones de parking, cambios de batería, pinchazos y traslados. Respuesta inmediata por WhatsApp o llamada." />
+  <link rel="icon" href="/favicon.ico" />
 
-function normalizarTelefono(valor){
-  let n = String(valor || '').replace(/[^0-9+]/g,'').trim();
-  if (!n) return '';
+  <meta property="og:title" content="Grúas César — Asistencia 24/7 en Barcelona" />
+  <meta property="og:description" content="Servicio rápido y profesional. Escríbenos por WhatsApp y vamos al momento." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="/og-gruas-cesar.webp" />
+  <meta name="theme-color" content="#0ea5e9" />
 
-  if (n.startsWith('00')) n = '+' + n.slice(2);
-  if (n.startsWith('+')) {
-    const d = n.replace(/[^\d]/g,'');
-    return d ? '+' + d : '';
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=AW-11068280759"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'AW-11068280759');
+  </script>
+
+  <!-- Schema.org LocalBusiness -->
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"AutomotiveBusiness",
+    "name":"Grúas César",
+    "areaServed":"Barcelona",
+    "url":"https://tu-dominio.com",
+    "telephone":"+34633078354",
+    "image":"https://tu-dominio.com/og-gruas-cesar.webp",
+    "openingHours":"Mo-Su 00:00-23:59",
+    "address":{
+      "@type":"PostalAddress",
+      "addressLocality":"Barcelona",
+      "addressCountry":"ES"
+    },
+    "sameAs":["https://wa.me/34633078354"]
   }
-  if (/^[6-9]\d{8}$/.test(n)) return '+34' + n;
-  if (n.startsWith('34') && n.length >= 11) return '+' + n;
+  </script>
 
-  const d = n.replace(/[^\d]/g,'');
-  return d ? '+' + d : '';
-}
+  <style>
+    /* aquí va tu CSS actual */
+  </style>
+</head>
 
-/* =========================
-   AÑO DINÁMICO
-========================= */
-const yearEl = document.getElementById('year');
-if (yearEl) yearEl.textContent = new Date().getFullYear();
+<body>
+  <div class="backdrop">
+    <div class="container">
 
-/* =========================
-   GEOLOCALIZACIÓN
-========================= */
-let gps = null;
-const gpsBtn = document.getElementById('gpsBtn');
-const estado = document.getElementById('estado');
+      <header class="hero" aria-label="Encabezado">
+        <span class="badge">⏱️ 24/7 · Respuesta inmediata</span>
+        <h1>Grúas César</h1>
+        <p>Servicio rápido y profesional en Barcelona y alrededores. Escríbenos por WhatsApp y vamos al momento.</p>
 
-if (gpsBtn) {
-  gpsBtn.addEventListener('click', () => {
-    estado.textContent = 'Solicitando ubicación…';
-    if (!navigator.geolocation){
-      estado.textContent = 'Tu navegador no soporta GPS.';
-      return;
-    }
-    navigator.geolocation.getCurrentPosition(
-      pos => {
-        gps = {
-          lat: pos.coords.latitude.toFixed(6),
-          lng: pos.coords.longitude.toFixed(6),
-          acc: Math.round(pos.coords.accuracy)
-        };
-        estado.textContent = `Ubicación añadida (±${gps.acc} m)`;
-      },
-      () => estado.textContent = 'No se pudo obtener la ubicación.',
-      { enableHighAccuracy:true, timeout:8000, maximumAge:0 }
-    );
-  });
-}
+        <div class="phone">
+          WhatsApp:
+          <a href="https://wa.me/34633078354" class="link" style="color:#fef08a">633 078 354</a>
+        </div>
 
-/* =========================
-   SERVICIOS
-========================= */
-const SERVICES = [
-  { text:"Extracción de parking", icon:"🚚" },
-  { text:"Cambio de batería (AGM/EFB y convencionales)", icon:"🔋" },
-  { text:"Pinchazo / rueda", icon:"🛞" },
-  { text:"Arranque con pinzas", icon:"⚡" },
-  { text:"Traslado de vehículos y motos", icon:"🚗🏍️" },
-  { text:"Traslado de larga distancia", icon:"🛣️" },
-  { text:"Apertura de vehículo", icon:"🔑" },
-  { text:"Suministro de combustible", icon:"⛽" },
-  { text:"Asistencia a motos", icon:"🏍️" },
-  { text:"Rescate fuera de vía", icon:"🆘" },
-  { text:"Vehículo alto (+2,10 m)", icon:"📏" },
-  { text:"Otro", icon:"❓" }
-];
+        <nav class="cta-row" aria-label="Acciones rápidas">
+          <a class="btn whatsapp" href="https://wa.me/34633078354?text=Hola%20Gr%C3%BAas%20C%C3%A9sar%2C%20necesito%20asistencia." target="_blank" rel="noopener" aria-label="Enviar WhatsApp">💬 Enviar WhatsApp</a>
+          <a class="btn call" href="tel:+34633078354" aria-label="Llamar ahora">📞 Llamar ahora</a>
+          <a class="btn map" href="https://www.google.com/maps/search/?api=1&query=Barcelona,+Baix+Llobregat,+Sant+Cugat" target="_blank" rel="noopener" aria-label="Ver cobertura">📍 Ver cobertura</a>
+        </nav>
+      </header>
 
-(function hydrateServices(){
-  const select = document.getElementById('servicio');
-  const ul = document.querySelector('ul.services');
-  if (!select || !ul) return;
+      <main class="grid" aria-label="Contenido principal">
+        <!-- IZQUIERDA -->
+        <section class="card" aria-label="Servicios y reseñas">
+          <h2>Servicios</h2>
+          <ul class="services" id="servicesList" aria-label="Listado de servicios"></ul>
 
-  select.innerHTML = '';
-  const ph = document.createElement('option');
-  ph.textContent = 'Selecciona un servicio';
-  ph.disabled = true;
-  ph.selected = true;
-  select.appendChild(ph);
+          <section class="testimonios" aria-label="Testimonios">
+            <h2>Testimonios</h2>
+            <div class="testimonio">⭐⭐⭐⭐⭐ “Rápido y muy profesional. ¡Gracias Grúas César!” – Laura G.</div>
+            <div class="testimonio">⭐⭐⭐⭐⭐ “Llegaron en menos de 15 minutos. Servicio excelente.” – Javier R.</div>
+          </section>
 
-  SERVICES.forEach(s=>{
-    const o = document.createElement('option');
-    o.value = s.text;
-    o.textContent = s.text;
-    select.appendChild(o);
-  });
+          <section class="mapa" style="margin-top:16px" aria-label="Mapa de cobertura">
+            <h2 style="margin: 6px 0 10px;">Cobertura en Barcelona</h2>
+            <iframe
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2993.0598336939326!2d2.173403376517833!3d41.38506397129557!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12a4a2fbb3dba5ff%3A0x400fae02160fc10!2sBarcelona!5e0!3m2!1ses!2ses!4v1713785192801!5m2!1ses!2ses"
+              allowfullscreen="">
+            </iframe>
+          </section>
+        </section>
 
-  ul.innerHTML = '';
-  SERVICES.filter(s=>s.text!=='Otro').forEach(s=>{
-    const li = document.createElement('li');
-    li.textContent = `${s.icon} ${s.text}`;
-    ul.appendChild(li);
-  });
-})();
+        <!-- DERECHA -->
+        <section class="card" aria-label="Formulario de asistencia">
+          <h2 style="margin-top:0">Solicita asistencia por WhatsApp</h2>
+          <p class="small">Completa el formulario y se abrirá WhatsApp con tu mensaje listo para enviar. Si lo permites, añadimos tu ubicación GPS.</p>
 
-/* =========================
-   MENSAJE WHATSAPP
-========================= */
-function buildMessage(d){
-  const l = [];
-  l.push(`Hola Grúas César, necesito *${d.servicio}*.`);
-  l.push('');
-  if (d.ubicacion) l.push(`📍 Ubicación: ${d.ubicacion}`);
-  if (d.gps){
-    l.push(`📡 GPS: https://maps.google.com/?q=${d.gps.lat},${d.gps.lng} (±${d.gps.acc}m)`);
-  }
-  if (d.matricula) l.push(`🚘 Matrícula: ${d.matricula}`);
-  if (d.vehiculo) l.push(`🔎 Modelo: ${d.vehiculo}`);
-  if (d.detalles) l.push(`📝 Detalles: ${d.detalles}`);
-  l.push('');
-  if (d.nombre) l.push(`👤 Nombre: ${d.nombre}`);
-  if (d.tel) l.push(`📞 Tel: ${d.tel}`);
-  return l.join('\n');
-}
+          <form id="asistenciaForm" novalidate>
+            <input type="text" name="empresa" id="empresa" style="display:none" tabindex="-1" autocomplete="off" />
 
-/* =========================
-   FORMULARIO
-========================= */
-const form = document.getElementById('asistenciaForm');
-const telInput = document.getElementById('telefono');
+            <div class="full">
+              <label for="servicio">¿Qué necesitas?</label>
+              <select id="servicio" name="servicio" required></select>
+            </div>
 
-if (telInput){
-  telInput.addEventListener('input',()=>{
-    telInput.value = telInput.value.replace(/[^0-9+]/g,'');
-  });
-}
+            <div>
+              <label for="nombre">Tu nombre</label>
+              <input type="text" id="nombre" name="nombre" placeholder="Ej. Carlos" autocomplete="name" required />
+            </div>
 
-if (form){
-  form.addEventListener('submit', e=>{
-    e.preventDefault();
-    const btn = document.getElementById('enviarBtn');
+            <div>
+              <label for="telefono">Tu teléfono</label>
+              <input type="tel" id="telefono" name="telefono" inputmode="tel" autocomplete="tel" placeholder="Ej. +34 633 078 354" required />
+            </div>
 
-    if (document.getElementById('empresa').value) return;
+            <div>
+              <label for="matricula">Matrícula (opcional)</label>
+              <input type="text" id="matricula" name="matricula" placeholder="Ej. 1234-ABC" />
+            </div>
 
-    if (!form.checkValidity()){
-      estado.textContent = 'Revisa los campos obligatorios.';
-      form.reportValidity();
-      return;
-    }
+            <div>
+              <label for="vehiculo">Modelo (opcional)</label>
+              <input type="text" id="vehiculo" name="vehiculo" placeholder="Marca y modelo" />
+            </div>
 
-    const tel = normalizarTelefono(form.telefono.value);
-    if (!/^\+\d{8,15}$/.test(tel)){
-      estado.textContent = 'Teléfono no válido. Ej: +34633078354';
-      telInput.focus();
-      return;
-    }
+            <div class="full">
+              <label for="ubicacion">¿Dónde necesitas la grúa?</label>
+              <input type="text" id="ubicacion" name="ubicacion" placeholder="Dirección exacta o punto de referencia" autocomplete="street-address" required />
+            </div>
 
-    btn.disabled = true;
-    btn.textContent = 'Abriendo WhatsApp…';
+            <div class="full">
+              <label for="detalles">Detalles (opcional)</label>
+              <textarea id="detalles" name="detalles" placeholder="Ej. Altura 2,00 m, coche automático, rueda derecha pinchada, etc."></textarea>
+            </div>
 
-    const data = {
-      servicio: form.servicio.value,
-      nombre: linea(form.nombre.value),
-      ubicacion: linea(form.ubicacion.value),
-      matricula: linea(form.matricula.value),
-      vehiculo: linea(form.vehiculo.value),
-      detalles: linea(form.detalles.value),
-      gps,
-      tel
-    };
+            <div class="full actions">
+              <button type="submit" class="btn submit" id="enviarBtn">💬 Enviar por WhatsApp</button>
+              <button type="button" class="btn ghost" id="gpsBtn">📍 Añadir mi ubicación</button>
+              <span id="estado" class="small" role="status" aria-live="polite"></span>
+            </div>
 
-    const textEncoded = encodeURIComponent(buildMessage(data));
+            <p class="small full">Al continuar se abrirá WhatsApp con tu mensaje prellenado. Podrás añadir fotos del vehículo o la ubicación directamente en el chat.</p>
+          </form>
+        </section>
+      </main>
 
-    /* 🔥 CONVERSIÓN GOOGLE ADS (lista)
-       Actívala cuando Google te dé el label
-    if (typeof gtag === 'function') {
-      gtag('event','conversion',{
-        send_to:'AW-11068280759/REEMPLAZAR_LABEL'
-      });
-    }
-    */
+      <footer style="opacity:.85; margin-top: 20px; text-align:center" class="small">
+        © <span id="year"></span> Grúas César · Barcelona · <a href="tel:+34633078354" style="color:#a5f3fc">+34 633 078 354</a>
+      </footer>
 
-    const waWeb = `https://wa.me/${PHONE_DIGITS}?text=${textEncoded}&utm_source=web&utm_medium=form&utm_campaign=wa`;
-    const waApp = `whatsapp://send?phone=${PHONE_E164}&text=${textEncoded}`;
+    </div>
+  </div>
 
-    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-    if (isMobile){
-      window.location.href = waApp;
-      setTimeout(()=>window.open(waWeb,'_blank','noopener'),700);
-    } else {
-      window.open(waWeb,'_blank','noopener');
-    }
+  <!-- Botón flotante WhatsApp -->
+  <a href="https://wa.me/34633078354" class="floating-whatsapp" target="_blank" rel="noopener" aria-label="Abrir WhatsApp">💬</a>
 
-    setTimeout(()=>{
-      btn.disabled = false;
-      btn.textContent = '💬 Enviar por WhatsApp';
-    },1500);
-  });
-}
-</script>
+  <!-- Logo flotante (abajo derecha encima del WhatsApp) -->
+  <img src="logo-gruas-cesar.webp" alt="Grúas César" class="floating-logo" loading="lazy" />
+
+  <!-- JS (puedes moverlo a app.js si quieres) -->
+  <script>
+    /* aquí va el JS refactorizado del siguiente bloque */
+  </script>
+</body>
+</html>
+
