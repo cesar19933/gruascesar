@@ -1,191 +1,183 @@
 <script>
-/* =========================
-   CONFIGURACIÓN GENERAL
-========================= */
-const PHONE_E164 = '+34633078354';
-const PHONE_DIGITS = PHONE_E164.replace('+','');
+document.addEventListener('DOMContentLoaded', () => {
+  const PHONE_E164 = '+34633078354';
+  const PHONE_DIGITS = PHONE_E164.replace('+','');
 
-/* =========================
-   UTILIDADES
-========================= */
-const linea = v => (v && String(v).trim()) ? String(v).trim() : null;
+  const linea = v => (v && String(v).trim()) ? String(v).trim() : null;
 
-function normalizarTelefono(valor){
-  let n = String(valor || '').replace(/[^0-9+]/g,'').trim();
-  if (!n) return '';
-
-  if (n.startsWith('00')) n = '+' + n.slice(2);
-  if (n.startsWith('+')) {
+  function normalizarTelefono(valor){
+    let n = String(valor || '').replace(/[^0-9+]/g,'').trim();
+    if (!n) return '';
+    if (n.startsWith('00')) n = '+' + n.slice(2);
+    if (n.startsWith('+')) {
+      const d = n.replace(/[^\d]/g,'');
+      return d ? '+' + d : '';
+    }
+    if (/^[6-9]\d{8}$/.test(n)) return '+34' + n;
+    if (n.startsWith('34') && n.length >= 11) return '+' + n;
     const d = n.replace(/[^\d]/g,'');
     return d ? '+' + d : '';
   }
-  if (/^[6-9]\d{8}$/.test(n)) return '+34' + n;
-  if (n.startsWith('34') && n.length >= 11) return '+' + n;
 
-  const d = n.replace(/[^\d]/g,'');
-  return d ? '+' + d : '';
-}
+  // Año dinámico (sin crashear)
+  const yearEl = document.getElementById('year');
+  if (yearEl) yearEl.textContent = new Date().getFullYear();
 
-/* =========================
-   AÑO DINÁMICO
-========================= */
-document.getElementById('year').textContent = new Date().getFullYear();
+  // GEO
+  let gps = null;
+  const gpsBtn = document.getElementById('gpsBtn');
+  const estado = document.getElementById('estado');
 
-/* =========================
-   GEOLOCALIZACIÓN
-========================= */
-let gps = null;
-const gpsBtn = document.getElementById('gpsBtn');
-const estado = document.getElementById('estado');
-
-gpsBtn.addEventListener('click', () => {
-  estado.textContent = 'Solicitando ubicación…';
-  if (!navigator.geolocation){
-    estado.textContent = 'Tu navegador no soporta GPS.';
-    return;
+  function setEstado(msg){
+    if (estado) estado.textContent = msg || '';
   }
-  navigator.geolocation.getCurrentPosition(
-    pos => {
-      gps = {
-        lat: pos.coords.latitude.toFixed(6),
-        lng: pos.coords.longitude.toFixed(6),
-        acc: Math.round(pos.coords.accuracy)
-      };
-      estado.textContent = `Ubicación añadida (±${gps.acc} m)`;
-    },
-    () => estado.textContent = 'No se pudo obtener la ubicación.',
-    { enableHighAccuracy:true, timeout:8000, maximumAge:0 }
-  );
-});
 
-/* =========================
-   SERVICIOS (LISTA + SELECT)
-========================= */
-const SERVICES = [
-  { text:"Extracción de parking", icon:"🚚" },
-  { text:"Cambio de batería (AGM/EFB y convencionales)", icon:"🔋" },
-  { text:"Pinchazo / rueda", icon:"🛞" },
-  { text:"Arranque con pinzas", icon:"⚡" },
-  { text:"Traslado de vehículos y motos", icon:"🚗🏍️" },
-  { text:"Traslado de larga distancia", icon:"🛣️" },
-  { text:"Apertura de vehículo (puertas cerradas)", icon:"🔑" },
-  { text:"Suministro de combustible", icon:"⛽" },
-  { text:"Asistencia a motos", icon:"🏍️" },
-  { text:"Rescate fuera de vía", icon:"🆘" },
-  { text:"Vehículo alto (+2,10 m)", icon:"📏" },
-  { text:"Otro", icon:"❓" }
-];
+  if (gpsBtn){
+    gpsBtn.addEventListener('click', () => {
+      setEstado('Solicitando ubicación…');
+      if (!navigator.geolocation){
+        setEstado('Tu navegador no soporta GPS.');
+        return;
+      }
+      navigator.geolocation.getCurrentPosition(
+        pos => {
+          gps = {
+            lat: pos.coords.latitude.toFixed(6),
+            lng: pos.coords.longitude.toFixed(6),
+            acc: Math.round(pos.coords.accuracy)
+          };
+          setEstado(`Ubicación añadida (±${gps.acc} m)`);
+        },
+        () => setEstado('No se pudo obtener la ubicación.'),
+        { enableHighAccuracy:true, timeout:8000, maximumAge:0 }
+      );
+    });
+  }
 
-(function hydrateServices(){
+  // SERVICIOS
+  const SERVICES = [
+    { text:"Extracción de parking", icon:"🚚" },
+    { text:"Cambio de batería (AGM/EFB y convencionales)", icon:"🔋" },
+    { text:"Pinchazo / rueda", icon:"🛞" },
+    { text:"Arranque con pinzas", icon:"⚡" },
+    { text:"Traslado de vehículos y motos", icon:"🚗🏍️" },
+    { text:"Traslado de larga distancia", icon:"🛣️" },
+    { text:"Apertura de vehículo (puertas cerradas)", icon:"🔑" },
+    { text:"Suministro de combustible", icon:"⛽" },
+    { text:"Asistencia a motos", icon:"🏍️" },
+    { text:"Rescate fuera de vía", icon:"🆘" },
+    { text:"Vehículo alto (+2,10 m)", icon:"📏" },
+    { text:"Otro", icon:"❓" }
+  ];
+
   const select = document.getElementById('servicio');
-  const ul = document.querySelector('ul.services');
-  if (!select || !ul) return;
+  const ul = document.querySelector('ul.services') || document.getElementById('servicesList');
 
-  select.innerHTML = '';
-  const ph = document.createElement('option');
-  ph.textContent = 'Selecciona un servicio';
-  ph.disabled = true;
-  ph.selected = true;
-  select.appendChild(ph);
+  if (select && ul){
+    select.innerHTML = '';
+    const ph = document.createElement('option');
+    ph.value = '';
+    ph.disabled = true;
+    ph.selected = true;
+    ph.textContent = 'Selecciona un servicio';
+    select.appendChild(ph);
 
-  SERVICES.forEach(s=>{
-    const o = document.createElement('option');
-    o.value = s.text;
-    o.textContent = s.text;
-    select.appendChild(o);
-  });
+    SERVICES.forEach(s=>{
+      const o = document.createElement('option');
+      o.value = s.text;
+      o.textContent = s.text;
+      select.appendChild(o);
+    });
 
-  ul.innerHTML = '';
-  SERVICES.filter(s=>s.text!=='Otro').forEach(s=>{
-    const li = document.createElement('li');
-    li.textContent = `${s.icon} ${s.text}`;
-    ul.appendChild(li);
-  });
-})();
-
-/* =========================
-   MENSAJE WHATSAPP
-========================= */
-function buildMessage(data){
-  const l = [];
-  l.push(`Hola Grúas César, necesito *${data.servicio}*.`);
-  l.push('');
-  if (data.ubicacion) l.push(`📍 Ubicación: ${data.ubicacion}`);
-  if (data.gps){
-    l.push(`📡 GPS: https://maps.google.com/?q=${data.gps.lat},${data.gps.lng} (±${data.gps.acc}m)`);
-  }
-  if (data.matricula) l.push(`🚘 Matrícula: ${data.matricula}`);
-  if (data.vehiculo) l.push(`🔎 Modelo: ${data.vehiculo}`);
-  if (data.detalles) l.push(`📝 Detalles: ${data.detalles}`);
-  l.push('');
-  if (data.nombre) l.push(`👤 Nombre: ${data.nombre}`);
-  if (data.tel) l.push(`📞 Tel: ${data.tel}`);
-  return l.join('\n');
-}
-
-/* =========================
-   FORMULARIO → WHATSAPP
-========================= */
-const form = document.getElementById('asistenciaForm');
-const telInput = document.getElementById('telefono');
-
-telInput.addEventListener('input',()=>{
-  telInput.value = telInput.value.replace(/[^0-9+]/g,'');
-});
-
-form.addEventListener('submit', e=>{
-  e.preventDefault();
-  const btn = document.getElementById('enviarBtn');
-
-  if (document.getElementById('empresa').value) return;
-  if (!form.checkValidity()){
-    estado.textContent = 'Revisa los campos obligatorios.';
-    form.reportValidity();
-    return;
+    ul.innerHTML = '';
+    SERVICES.filter(s=>s.text!=='Otro').forEach(s=>{
+      const li = document.createElement('li');
+      li.textContent = `${s.icon} ${s.text}`;
+      ul.appendChild(li);
+    });
   }
 
-  const tel = normalizarTelefono(form.telefono.value);
-  if (!/^\+\d{8,15}$/.test(tel)){
-    estado.textContent = 'Teléfono no válido. Ej: +34633078354';
-    telInput.focus();
-    return;
+  // MENSAJE
+  function buildMessage(data){
+    const l = [];
+    l.push(`Hola Grúas César, necesito *${data.servicio}*.`);
+    l.push('');
+    if (data.ubicacion) l.push(`📍 Ubicación: ${data.ubicacion}`);
+    if (data.gps) l.push(`📡 GPS: https://maps.google.com/?q=${data.gps.lat},${data.gps.lng} (±${data.gps.acc}m)`);
+    if (data.matricula) l.push(`🚘 Matrícula: ${data.matricula}`);
+    if (data.vehiculo) l.push(`🔎 Modelo: ${data.vehiculo}`);
+    if (data.detalles) l.push(`📝 Detalles: ${data.detalles}`);
+    l.push('');
+    if (data.nombre) l.push(`👤 Nombre: ${data.nombre}`);
+    if (data.tel) l.push(`📞 Tel: ${data.tel}`);
+    return l.join('\\n');
   }
 
-  btn.disabled = true;
-  btn.textContent = 'Abriendo WhatsApp…';
+  // FORM
+  const form = document.getElementById('asistenciaForm');
+  const telInput = document.getElementById('telefono');
 
-  const data = {
-    servicio: form.servicio.value,
-    nombre: linea(form.nombre.value),
-    ubicacion: linea(form.ubicacion.value),
-    matricula: linea(form.matricula.value),
-    vehiculo: linea(form.vehiculo.value),
-    detalles: linea(form.detalles.value),
-    gps,
-    tel
-  };
-
-  const textEncoded = encodeURIComponent(buildMessage(data));
-  const waWeb = `https://wa.me/${PHONE_DIGITS}?text=${textEncoded}&utm_source=web&utm_medium=form&utm_campaign=wa`;
-  const waApp = `whatsapp://send?phone=${PHONE_E164}&text=${textEncoded}`;
-
-  /* Google Ads conversión (cuando tengas el label)
-  if (typeof gtag === 'function') {
-    gtag('event','conversion',{send_to:'AW-11068280759/REEMPLAZAR_LABEL'});
-  }
-  */
-
-  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-  if (isMobile){
-    window.location.href = waApp;
-    setTimeout(()=>window.open(waWeb,'_blank','noopener'),700);
-  } else {
-    window.open(waWeb,'_blank','noopener');
+  if (telInput){
+    telInput.addEventListener('input',()=>{
+      telInput.value = telInput.value.replace(/[^0-9+]/g,'');
+    });
   }
 
-  setTimeout(()=>{
-    btn.disabled = false;
-    btn.textContent = '💬 Enviar por WhatsApp';
-  },1500);
+  if (form){
+    form.addEventListener('submit', e=>{
+      e.preventDefault();
+      const btn = document.getElementById('enviarBtn');
+
+      if (document.getElementById('empresa')?.value) return;
+
+      if (!form.checkValidity()){
+        setEstado('Revisa los campos obligatorios.');
+        form.reportValidity();
+        return;
+      }
+
+      const tel = normalizarTelefono(form.telefono.value);
+      if (!/^\+\d{8,15}$/.test(tel)){
+        setEstado('Teléfono no válido. Ej: +34633078354');
+        telInput?.focus();
+        return;
+      }
+
+      if (btn){
+        btn.disabled = true;
+        btn.textContent = 'Abriendo WhatsApp…';
+      }
+
+      const data = {
+        servicio: form.servicio.value,
+        nombre: linea(form.nombre.value),
+        ubicacion: linea(form.ubicacion.value),
+        matricula: linea(form.matricula.value),
+        vehiculo: linea(form.vehiculo.value),
+        detalles: linea(form.detalles.value),
+        gps,
+        tel
+      };
+
+      const textEncoded = encodeURIComponent(buildMessage(data));
+      const waWeb = `https://wa.me/${PHONE_DIGITS}?text=${textEncoded}&utm_source=web&utm_medium=form&utm_campaign=wa`;
+      const waApp = `whatsapp://send?phone=${PHONE_E164}&text=${textEncoded}`;
+
+      const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+      if (isMobile){
+        window.location.href = waApp;
+        setTimeout(()=>window.open(waWeb,'_blank','noopener'),700);
+      } else {
+        window.open(waWeb,'_blank','noopener');
+      }
+
+      setTimeout(()=>{
+        if (btn){
+          btn.disabled = false;
+          btn.textContent = '💬 Enviar por WhatsApp';
+        }
+      },1500);
+    });
+  }
 });
 </script>
