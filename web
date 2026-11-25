@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Grúas César 24H | Asistencia para coches, motos y camiones en Barcelona</title>
+
+  <meta name="description" content="Grúas César. Asistencia en carretera 24/7 en Barcelona: coches, motos, camiones y tráileres. Baterías, ruedas, asistencia neumática y traslados. Respuesta inmediata por WhatsApp o llamada." />
+  <meta name="theme-color" content="#80ed24" />
+
+  <!-- Google Ads -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=AW-11068280759"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'AW-11068280759');
+    gtag('config', 'AW-18034146594');
+  </script>
+
+  <style>
+    :root{
+      --bg-dark:#0b1220;
+      --primary:#80ed24;
+      --primary-2:#a4ff54;
+      --card:rgba(255,255,255,0.06);
+      --muted:rgba(255,255,255,0.75);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Helvetica,Arial;
+      background: var(--bg-dark) url('fondo-gruas-cesar.png') center/cover no-repeat fixed;
+      color:#fff;
+    }
+    @media (max-width:720px){ body{background-attachment:scroll} }
+
+    .backdrop{
+      backdrop-filter:saturate(120%) blur(2px);
+      background: linear-gradient(180deg, rgba(0,0,0,0.6), rgba(0,0,0,0.72));
+      min-height:100dvh;
+      padding:clamp(16px,3vw,32px);
+    }
+    .container{max-width:980px;margin:0 auto}
+
+    header{display:grid;gap:8px;text-align:center;margin-bottom:16px}
+    header h1{font-size:clamp(28px,5vw,44px);letter-spacing:.5px;margin:0}
+    header p{color:var(--muted);font-size:clamp(16px,2.6vw,18px);margin:0}
+
+    .badge{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:6px 10px;border-radius:999px;font-weight:700;
+      background:rgba(56,189,248,0.12);color:var(--primary-2);
+      justify-self:center;
+    }
+
+    .grid{display:grid;gap:16px;grid-template-columns:1fr}
+    @media (min-width:880px){ .grid{grid-template-columns:1.2fr .8fr} }
+
+    .card{
+      background:var(--card);
+      border:1px solid rgba(255,255,255,0.08);
+      border-radius:16px;
+      padding:clamp(16px,2.5vw,24px);
+      box-shadow:0 8px 30px rgba(0,0,0,.25);
+    }
+
+    .cta-row{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:12px}
+    .btn{
+      appearance:none;border:0;cursor:pointer;
+      text-decoration:none;font-weight:800;
+      border-radius:12px;padding:12px 16px;
+      display:inline-flex;align-items:center;gap:10px;
+      color:#fff;
+    }
+    .btn.whatsapp{background:#25D366;color:#071b12}
+    .btn.call{background:#3b82f6}
+    .btn.map{background:#80ed24}
+
+    .phone{font-size:clamp(18px,3.5vw,22px);margin-top:8px;color:#fef08a;font-weight:800}
+
+    ul.services{list-style:none;margin:12px 0 0;padding:0}
+    ul.services li{
+      display:flex;align-items:center;gap:10px;
+      padding:10px 12px;border-radius:12px;
+      background:rgba(255,255,255,0.04);margin-bottom:10px;
+    }
+
+    form{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    form .full{grid-column:1/-1}
+    label{font-size:14px;color:var(--muted);display:block;margin:4px 0}
+    input,select,textarea{
+      width:100%;
+      border:1px solid rgba(255,255,255,0.14);
+      background:rgba(0,0,0,0.35);
+      color:#fff;border-radius:10px;
+      padding:12px;font-size:16px;outline:none;
+    }
+    textarea{min-height:96px;resize:vertical}
+    .small{font-size:12px;color:var(--muted)}
+    .actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    .submit{background:var(--primary);color:#03131a;font-weight:900}
+    .ghost{background:transparent;border:1px dashed rgba(255,255,255,0.25);color:#fff}
+
+    iframe{width:100%;height:300px;border:0;border-radius:12px}
+
+    @media (max-width:720px){
+      form{grid-template-columns:1fr}
+      .cta-row{flex-direction:column}
+      .btn{justify-content:center;width:100%}
+    }
+
+    .floating-whatsapp{
+      position:fixed;right:16px;bottom:16px;
+      background:#25D366;color:#03131a;
+      border-radius:999px;padding:12px 14px;
+      font-size:22px;text-decoration:none;
+      box-shadow:0 8px 28px rgba(0,0,0,.45);
+      animation:pulse 1.8s infinite;
+      z-index:50;
+    }
+    @keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.08)}100%{transform:scale(1)}}
+
+    .floating-logo{
+      position:fixed;right:16px;bottom:92px;
+      width:120px;max-width:38vw;
+      z-index:45;pointer-events:none;
+      filter:drop-shadow(0 10px 28px rgba(0,0,0,.55));
+    }
+    @media (max-width:480px){ .floating-logo{width:90px;bottom:88px} }
+  
+body{background:#08131b;color:#f5f8fa} .backdrop{background:none;backdrop-filter:none;padding:0 20px 100px}.container{max-width:1180px} a{color:#a4ff54} .nav{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:22px 0;flex-wrap:wrap}.brand{font-size:26px;font-weight:950;font-style:italic;line-height:1}.brand b{color:#80ed24}.navlinks{display:flex;gap:18px;flex-wrap:wrap}.navlinks a{text-decoration:none;color:white;font-weight:650}.hero{display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:24px;background:#101e28;border-radius:22px;overflow:hidden;text-align:left;padding:28px}.hero h1{font-size:clamp(34px,5vw,62px);line-height:1.04;font-style:italic}.hero h1 em{color:#80ed24}.hero img{width:100%;border-radius:14px;display:block}.hero p{margin:14px 0}.hero .cta-row{justify-content:flex-start}.btn.whatsapp,.btn.submit{background:#80ed24;color:#08131b}.btn.call,.btn.map{background:#172833;border:1px solid #a6b8bf;color:white}.strip{display:flex;justify-content:space-around;gap:12px;flex-wrap:wrap;padding:20px 0;border-bottom:2px solid #80ed24;font-weight:700}.strip span{color:#a4ff54}.fleet{margin:28px 0}.fleet img{width:100%;max-height:440px;object-fit:cover;border-radius:16px}.fleetlabels{display:grid;grid-template-columns:1fr 1fr;gap:12px}.fleetlabels a{background:#172833;padding:18px;border-radius:12px;text-decoration:none;font-weight:800}.truck{border:1px solid #80ed24;margin:24px 0;background:linear-gradient(120deg,#142730,#08131b)}.truck h2{font-size:clamp(24px,3vw,36px);margin-top:0}.truck ul{display:grid;grid-template-columns:1fr 1fr;gap:12px;list-style:none;padding:0}.truck li:before{content:'✓ ';color:#80ed24;font-weight:bold}.bottom{position:fixed;bottom:0;left:0;right:0;display:flex;justify-content:center;gap:10px;background:#08131b;padding:10px;z-index:60;border-top:1px solid #80ed24}.bottom .btn{width:auto}.floating-logo,.floating-whatsapp{display:none} select option{background:#172833} @media(max-width:720px){.hero{grid-template-columns:1fr;padding:18px}.hero img{order:-1}.truck ul{grid-template-columns:1fr}.navlinks{font-size:13px}.bottom .btn{font-size:14px;padding:10px}.fleetlabels a{padding:12px}.brand{font-size:23px}}
+</style>
+</head>
+
+<body>
+  <div class="backdrop">
+    <div class="container">
+
+<nav class="nav"><div class="brand">GRÚAS CÉSAR <b>24H</b></div><div class="navlinks"><a href="#servicios">Servicios</a><a href="#flota">Nuestra flota</a><a href="#camiones">Camiones</a><a href="#asistenciaForm">Contacto</a></div><a class="btn whatsapp" href="tel:+34633078354">633 078 354</a></nav>
+<header class="hero"><div><h1>Asistencia en carretera <em>24 horas</em></h1><p>✓ Turismos y motos<br>✓ Camiones y tráileres<br>✓ Asistencia mecánica móvil</p><p>📍 Barcelona y provincia</p><div class="cta-row"><a class="btn whatsapp" href="https://wa.me/34633078354">WhatsApp</a><a class="btn call" href="tel:+34633078354">Llamar ahora</a></div></div><img src="ducato.webp" alt="Fiat Ducato de Grúas César, asistencia en carretera" fetchpriority="high"></header>
+<div class="strip"><span>Servicio 24/7</span><span>Barcelona y provincia</span><span>Traslado de vehículos</span><span>Asistencia móvil</span></div>
+<section class="fleet" id="flota"><h2>Nuestra flota de asistencia</h2><img src="flota.webp" alt="Grúa 4x4 y grúa plataforma" loading="lazy"><div class="fleetlabels"><a href="#servicios">Turismos y motos →</a><a href="#camiones">Camiones y tráileres →</a></div></section>
+<section class="card truck" id="camiones"><h2>Asistencia mecánica móvil para <span style="color:#80ed24">camiones</span></h2><p>Desplazamiento al lugar de la avería en Barcelona y provincia. Intervenciones según condiciones de seguridad y disponibilidad.</p><ul><li>Baterías y arranque (24 V)</li><li>Pinchazos y cambio de ruedas</li><li>Sistemas neumáticos y aire a calderines</li><li>Asistencia en frenos</li><li>Preparación para remolque</li><li>Pequeñas reparaciones en ruta</li></ul><a class="btn whatsapp" href="#asistenciaForm">Solicitar asistencia</a></section>
+      <main class="grid" id="servicios">
+        <section class="card">
+          <h2>Servicios</h2>
+          <ul class="services" id="servicesList"></ul>
+
+          <div style="margin-top:16px">
+            <h2 style="margin:6px 0 10px;">Cobertura en Barcelona</h2>
+            <iframe loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2993.0598336939326!2d2.173403376517833!3d41.38506397129557!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12a4a2fbb3dba5ff%3A0x400fae02160fc10!2sBarcelona!5e0!3m2!1ses!2ses!4v1713785192801!5m2!1ses!2ses"
+              allowfullscreen></iframe>
+          </div>
+        </section>
+
+        <section class="card">
+          <h2 style="margin-top:0">Solicita asistencia por WhatsApp</h2>
+          <p class="small">Completa el formulario y se abrirá WhatsApp con tu mensaje listo. Si lo permites, añadimos tu ubicación GPS. Tus datos se compartirán con Grúas César cuando envíes el mensaje por WhatsApp.</p>
+
+          <form id="asistenciaForm" novalidate>
+            <input type="text" name="empresa" id="empresa" style="display:none" tabindex="-1" autocomplete="off" />
+
+            <div class="full">
+              <label for="servicio">¿Qué necesitas?</label>
+              <select id="servicio" name="servicio" required></select>
+            </div>
+
+            <div>
+              <label for="nombre">Tu nombre</label>
+              <input type="text" id="nombre" name="nombre" placeholder="Ej. Carlos" autocomplete="name" required />
+            </div>
+
+            <div>
+              <label for="telefono">Tu teléfono</label>
+              <input type="tel" id="telefono" name="telefono" inputmode="tel" autocomplete="tel" placeholder="Ej. +34 633 078 354" required />
+            </div>
+
+            <div>
+              <label for="matricula">Matrícula (opcional)</label>
+              <input type="text" id="matricula" name="matricula" placeholder="Ej. 1234-ABC" />
+            </div>
+
+            <div>
+              <label for="vehiculo">Modelo (opcional)</label>
+              <input type="text" id="vehiculo" name="vehiculo" placeholder="Marca y modelo" />
+            </div>
+
+            <div class="full">
+              <label for="ubicacion">¿Dónde necesitas la grúa?</label>
+              <input type="text" id="ubicacion" name="ubicacion" placeholder="Dirección exacta o punto de referencia" autocomplete="street-address" required />
+            </div>
+
+            <div class="full">
+              <label for="detalles">Detalles (opcional)</label>
+              <textarea id="detalles" name="detalles" placeholder="Ej. Altura 2,00 m, coche automático, rueda derecha pinchada, etc."></textarea>
+            </div>
+
+            <div class="full actions">
+              <button type="submit" class="btn submit" id="enviarBtn">💬 Enviar por WhatsApp</button>
+              <button type="button" class="btn ghost" id="gpsBtn">📍 Añadir mi ubicación</button>
+              <span id="estado" class="small" role="status" aria-live="polite"></span>
+            </div>
+          </form>
+        </section>
+      </main>
+
+      <footer style="opacity:.85; margin-top:20px; text-align:center" class="small">
+        © <span id="year"></span> Grúas César · Barcelona · <a href="tel:+34633078354" style="color:#a5f3fc">+34 633 078 354</a>
+      </footer>
+
+    </div>
+  </div>
+
+<div class="bottom"><a class="btn whatsapp" href="https://wa.me/34633078354">WhatsApp</a><a class="btn call" href="tel:+34633078354">Llamar</a><a class="btn map" href="#asistenciaForm">Enviar ubicación</a></div>
+
+  <script>
+  // SCRIPT BLINDADO (NO DEJA LA PÁGINA EN BLANCO)
+  document.addEventListener('DOMContentLoaded', () => {
+    const PHONE_E164 = '+34633078354';
+    const PHONE_DIGITS = PHONE_E164.replace('+','');
+
+    const $ = (s) => document.querySelector(s);
+    const linea = v => (v && String(v).trim()) ? String(v).trim() : null;
+
+    function setEstado(msg){ const e = $('#estado'); if (e) e.textContent = msg || ''; }
+
+    function normalizarTelefono(valor){
+      let n = String(valor || '').replace(/[^0-9+]/g,'').trim();
+      if (!n) return '';
+      if (n.startsWith('00')) n = '+' + n.slice(2);
+      if (n.startsWith('+')) {
+        const d = n.replace(/[^\d]/g,'');
+        return d ? '+' + d : '';
+      }
+      if (/^[6-9]\d{8}$/.test(n)) return '+34' + n;
+      if (n.startsWith('34') && n.length >= 11) return '+' + n;
+      const d = n.replace(/[^\d]/g,'');
+      return d ? '+' + d : '';
+    }
+
+    const yearEl = $('#year');
+    if (yearEl) yearEl.textContent = new Date().getFullYear();
+
+    // Servicios
+    const SERVICES = [
+      { text:"Extracción de parking", icon:"🚚" },
+      { text:"Cambio de batería (AGM/EFB y convencionales)", icon:"🔋" },
+      { text:"Pinchazo / rueda", icon:"🛞" },
+      { text:"Arranque con pinzas", icon:"⚡" },
+      { text:"Traslado de vehículos y motos", icon:"🚗🏍️" },
+      { text:"Traslado de larga distancia", icon:"🛣️" },
+      { text:"Apertura de vehículo (puertas cerradas)", icon:"🔑" },
+      { text:"Suministro de combustible", icon:"⛽" },
+      { text:"Asistencia a motos", icon:"🏍️" },
+      { text:"Rescate fuera de vía", icon:"🆘" },
+      { text:"Vehículo alto (+2,10 m)", icon:"📏" },
+      { text:"Camión: baterías y arranque 24 V", icon:"🔋" },
+      { text:"Camión: pinchazo o rueda", icon:"🛞" },
+      { text:"Camión: asistencia neumática", icon:"🔧" },
+      { text:"Camión: asistencia en frenos", icon:"🔧" },
+      { text:"Camión: preparación para remolque", icon:"🚚" },
+      { text:"Camión: pequeña reparación en ruta", icon:"🔧" },
+      { text:"Otro", icon:"❓" }
+    ];
+
+    const select = $('#servicio');
+    const ul = $('#servicesList');
+    if (select && ul){
+      select.innerHTML = '';
+      const ph = document.createElement('option');
+      ph.value = '';
+      ph.disabled = true;
+      ph.selected = true;
+      ph.textContent = 'Selecciona un servicio';
+      select.appendChild(ph);
+
+      SERVICES.forEach(s => {
+        const o = document.createElement('option');
+        o.value = s.text;
+        o.textContent = s.text;
+        select.appendChild(o);
+      });
+
+      ul.innerHTML = '';
+      SERVICES.filter(s => s.text !== 'Otro').forEach(s => {
+        const li = document.createElement('li');
+        li.textContent = `${s.icon} ${s.text}`;
+        ul.appendChild(li);
+      });
+    }
+
+    // GPS
+    let gps = null;
+    const gpsBtn = $('#gpsBtn');
+    if (gpsBtn){
+      gpsBtn.addEventListener('click', () => {
+        setEstado('Solicitando ubicación…');
+        if (!navigator.geolocation){
+          setEstado('Tu navegador no soporta GPS.');
+          return;
+        }
+        navigator.geolocation.getCurrentPosition(
+          pos => {
+            gps = {
+              lat: pos.coords.latitude.toFixed(6),
+              lng: pos.coords.longitude.toFixed(6),
+              acc: Math.round(pos.coords.accuracy)
+            };
+            setEstado(`Ubicación añadida (±${gps.acc} m)`);
+            if (!$('#ubicacion').value) $('#ubicacion').value = `GPS: ${gps.lat}, ${gps.lng}`;
+          },
+          () => setEstado('No se pudo obtener la ubicación.'),
+          { enableHighAccuracy:true, timeout:8000, maximumAge:0 }
+        );
+      });
+    }
+
+    function buildMessage(d){
+      const l = [];
+      l.push(`Hola Grúas César, necesito *${d.servicio}*.`);
+      l.push('');
+      if (d.ubicacion) l.push(`📍 Ubicación: ${d.ubicacion}`);
+      if (d.gps) l.push(`📡 GPS: https://maps.google.com/?q=${d.gps.lat},${d.gps.lng} (±${d.gps.acc}m)`);
+      if (d.matricula) l.push(`🚘 Matrícula: ${d.matricula}`);
+      if (d.vehiculo) l.push(`🔎 Modelo: ${d.vehiculo}`);
+      if (d.detalles) l.push(`📝 Detalles: ${d.detalles}`);
+      l.push('');
+      if (d.nombre) l.push(`👤 Nombre: ${d.nombre}`);
+      if (d.tel) l.push(`📞 Tel: ${d.tel}`);
+      return l.join('\n');
+    }
+
+    const form = $('#asistenciaForm');
+    const telInput = $('#telefono');
+
+    if (telInput){
+      telInput.addEventListener('input', () => {
+        telInput.value = telInput.value.replace(/[^0-9+]/g,'');
+      });
+    }
+
+    if (form){
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        if ($('#empresa')?.value) return;
+
+        if (!form.checkValidity()){
+          setEstado('Revisa los campos obligatorios.');
+          form.reportValidity();
+          return;
+        }
+
+        const tel = normalizarTelefono(form.telefono.value);
+        if (!/^\+\d{8,15}$/.test(tel)){
+          setEstado('Teléfono no válido. Ej: +34633078354');
+          telInput?.focus();
+          return;
+        }
+
+        const btn = $('#enviarBtn');
+        if (btn){ btn.disabled = true; btn.textContent = 'Abriendo WhatsApp…'; }
+
+        const data = {
+          servicio: form.servicio.value,
+          nombre: linea(form.nombre.value),
+          ubicacion: linea(form.ubicacion.value),
+          matricula: linea(form.matricula.value),
+          vehiculo: linea(form.vehiculo.value),
+          detalles: linea(form.detalles.value),
+          gps,
+          tel
+        };
+
+        const msgEncoded = encodeURIComponent(buildMessage(data));
+        const waWeb = `https://wa.me/${PHONE_DIGITS}?text=${msgEncoded}&utm_source=web&utm_medium=form&utm_campaign=wa`;
+        const waApp = `whatsapp://send?phone=${PHONE_E164}&text=${msgEncoded}`;
+
+        const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+        window.location.href = waWeb;
+
+        setTimeout(()=>{
+          if (btn){ btn.disabled = false; btn.textContent = '💬 Enviar por WhatsApp'; }
+        },1500);
+      });
+    }
+  });
+  </script>
+</body>
+</html>
