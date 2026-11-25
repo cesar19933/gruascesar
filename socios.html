@@ -1,1 +1,409 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Club Grúas César 24H</title>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+*{box-sizing:border-box}
+body{
+margin:0;
+background:#061217;
+color:white;
+font-family:Arial,Helvetica,sans-serif;
+}
+header{
+padding:25px;
+text-align:center;
+background:#030e14;
+border-bottom:2px solid #65ff00;
+}
+header img{width:240px;max-width:90%}
+h1,h2,h3{color:#65ff00}
+.container{
+max-width:1100px;
+margin:auto;
+padding:25px;
+}
+.hero{text-align:center;padding:25px 0}
+.planes{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:18px;
+}
+.card{
+background:#102229;
+border:1px solid #334b42;
+border-radius:18px;
+padding:25px;
+}
+.precio{
+font-size:36px;
+font-weight:bold;
+color:#65ff00;
+}
+button,.btn{
+display:block;
+width:100%;
+padding:14px;
+margin-top:12px;
+border:0;
+border-radius:10px;
+background:#65ff00;
+color:#061217;
+font-weight:bold;
+font-size:16px;
+cursor:pointer;
+text-decoration:none;
+text-align:center;
+}
+button:disabled{opacity:.5;cursor:not-allowed}
+input{
+width:100%;
+padding:14px;
+margin:8px 0;
+background:#061217;
+color:white;
+border:1px solid #496052;
+border-radius:10px;
+font-size:16px;
+}
+.acceso{
+max-width:480px;
+margin:35px auto;
+}
+.secundario{
+background:transparent;
+color:#65ff00;
+border:1px solid #65ff00;
+}
+#mensaje{
+line-height:1.5;
+overflow-wrap:anywhere;
+}
+footer{
+text-align:center;
+padding:30px;
+color:#aab9bf;
+}
+[hidden]{display:none!important}
+</style>
+</head>
+
+<body>
+
+<header>
+<a href="index.html">
+<img src="marca.webp" alt="Grúas César 24H">
+</a>
+</header>
+
+<main class="container">
+
+<section class="hero">
+<h1>CLUB GRÚAS CÉSAR</h1>
+<h2>Tu tranquilidad en carretera</h2>
+<p>Asistencia profesional en Barcelona y provincia.</p>
+<p>Próximamente disponibles nuestras membresías.</p>
+</section>
+
+<section class="planes">
+
+<div class="card">
+<h2>CLUB AUTO</h2>
+<div class="precio">9,90 €</div>
+<p>Al mes · Permanencia de 12 meses</p>
+<p>✓ 3 asistencias anuales</p>
+<p>✓ Arranque de batería</p>
+<p>✓ Montaje de batería</p>
+<p>✓ Asistencia de ruedas</p>
+<button disabled>Próximamente</button>
+</div>
+
+<div class="card">
+<h2>CLUB TRUCK</h2>
+<div class="precio">29,90 €</div>
+<p>Al mes · Permanencia de 12 meses</p>
+<p>✓ 3 asistencias anuales</p>
+<p>✓ Arranque 24 V</p>
+<p>✓ Montaje de baterías</p>
+<p>✓ Asistencia de ruedas</p>
+<button disabled>Próximamente</button>
+</div>
+
+<div class="card">
+<h2>CLUB TRASLADOS</h2>
+<div class="precio">19,90 €</div>
+<p>Al mes · Permanencia de 12 meses</p>
+<p>✓ 2 traslados anuales</p>
+<p>✓ Traslados programados</p>
+<p>✓ Vehículos hasta 3.500 kg MMA</p>
+<button disabled>Próximamente</button>
+</div>
+
+<div class="card">
+<h2>CLUB RESCATE 4X4</h2>
+<div class="precio">24,90 €</div>
+<p>Al mes · Permanencia de 12 meses</p>
+<p>✓ 2 servicios anuales</p>
+<p>✓ Extracción de parking</p>
+<p>✓ Vehículos bloqueados</p>
+<button disabled>Próximamente</button>
+</div>
+
+<div class="card">
+<h2>CLUB BUSINESS</h2>
+<div class="precio">A medida</div>
+<p>✓ Empresas y autónomos</p>
+<p>✓ Flotas de vehículos</p>
+<p>✓ Soluciones personalizadas</p>
+<button disabled>Próximamente</button>
+</div>
+
+</section>
+
+<p>Tarifas provisionales. Contratación todavía no disponible. Recambios y materiales no incluidos.</p>
+
+<section class="card acceso" id="acceso">
+
+<h2 id="titulo">Acceso socios</h2>
+<p>Área de pruebas. No contrata ninguna membresía.</p>
+
+<form id="formulario">
+
+<div id="campoNombre" hidden>
+<label for="nombre">Nombre completo</label>
+<input id="nombre" autocomplete="name">
+</div>
+
+<label for="email">Correo electrónico</label>
+<input type="email" id="email"
+autocomplete="email" required>
+
+<label for="password">Contraseña</label>
+<input type="password" id="password"
+autocomplete="current-password"
+minlength="8" required>
+
+<button type="submit" id="entrar">
+Iniciar sesión
+</button>
+
+<button type="button" class="secundario" id="cambiar">
+Crear cuenta de prueba
+</button>
+
+</form>
+
+<p id="mensaje" role="status"></p>
+
+</section>
+
+<section class="card acceso" id="panel" hidden>
+
+<h2>Mi área de socio</h2>
+
+<p>Nombre: <strong id="socioNombre"></strong></p>
+<p>Número de socio: <strong id="numeroSocio"></strong></p>
+<p>Email: <strong id="socioEmail"></strong></p>
+
+<h3>Mis contratos</h3>
+<div id="contratos"></div>
+
+<p>Los pagos y las asistencias estarán disponibles en una próxima fase.</p>
+
+<button id="salir">Cerrar sesión</button>
+
+</section>
+
+<a class="btn secundario" href="index.html">
+Volver a Grúas César
+</a>
+
+</main>
+
+<footer>
+Grúas César 24H · Barcelona
+<br><br>
+633 078 354
+</footer>
+
+<script>
+
+const cliente = supabase.createClient(
+'https://esbegevvzzwzbduaighk.supabase.co',
+'sb_publishable_2a6jREHZ4GryNFkQtd3p6A_PaHkcflv'
+);
+
+const $ = id => document.getElementById(id);
+let registro = false;
+
+$('cambiar').onclick = () => {
+registro = !registro;
+
+$('campoNombre').hidden = !registro;
+$('nombre').required = registro;
+
+$('titulo').textContent = registro
+? 'Crear cuenta de prueba'
+: 'Acceso socios';
+
+$('entrar').textContent = registro
+? 'Registrarme'
+: 'Iniciar sesión';
+
+$('cambiar').textContent = registro
+? 'Ya tengo cuenta'
+: 'Crear cuenta de prueba';
+
+$('password').autocomplete = registro
+? 'new-password'
+: 'current-password';
+
+$('mensaje').textContent = '';
+};
+
+$('formulario').onsubmit = async e => {
+
+e.preventDefault();
+
+const email = $('email').value.trim();
+const password = $('password').value;
+
+$('entrar').disabled = true;
+$('mensaje').textContent = 'Procesando...';
+
+try {
+
+if(registro){
+
+const {error} = await cliente.auth.signUp({
+email,
+password,
+options:{
+data:{nombre:$('nombre').value.trim()}
+}
+});
+
+if(error) throw error;
+
+$('mensaje').textContent =
+'Registro realizado. Revisa tu correo para confirmar la cuenta.';
+
+}else{
+
+const {error} = await cliente.auth.signInWithPassword({
+email,
+password
+});
+
+if(error) throw error;
+
+$('mensaje').textContent = '';
+await cargarSocio();
+
+}
+
+}catch(error){
+
+$('mensaje').textContent =
+'No se pudo completar la operación: '+error.message;
+
+}finally{
+
+$('entrar').disabled = false;
+
+}
+
+};
+
+async function cargarSocio(){
+
+const {data:{user}} = await cliente.auth.getUser();
+
+if(!user){
+$('panel').hidden = true;
+$('acceso').hidden = false;
+return;
+}
+
+const {data:socio,error} = await cliente
+.from('socios')
+.select('id,nombre,email,numero_socio')
+.eq('usuario_id',user.id)
+.single();
+
+if(error || !socio){
+$('mensaje').textContent =
+'No se pudo cargar la ficha de socio.';
+return;
+}
+
+$('socioNombre').textContent = socio.nombre;
+$('socioEmail').textContent = socio.email;
+$('numeroSocio').textContent =
+'GC-'+String(socio.numero_socio).padStart(6,'0');
+
+const resultado = await cliente
+.from('contratos')
+.select('matricula,estado,fecha_vencimiento')
+.eq('socio_id',socio.id);
+
+$('contratos').replaceChildren();
+
+if(resultado.error){
+
+$('contratos').textContent =
+'No se pudieron consultar los contratos.';
+
+}else if(!resultado.data.length){
+
+$('contratos').textContent =
+'Todavía no tienes ninguna membresía contratada.';
+
+}else{
+
+resultado.data.forEach(contrato => {
+
+const p = document.createElement('p');
+
+p.textContent =
+contrato.matricula+' · '+contrato.estado+
+' · Vencimiento: '+(contrato.fecha_vencimiento || 'Pendiente');
+
+$('contratos').appendChild(p);
+
+});
+
+}
+
+$('acceso').hidden = true;
+$('panel').hidden = false;
+
+}
+
+$('salir').onclick = async () => {
+
+const {error} = await cliente.auth.signOut();
+
+if(error){
+alert('No se pudo cerrar la sesión.');
+return;
+}
+
+$('panel').hidden = true;
+$('acceso').hidden = false;
+$('formulario').reset();
+$('mensaje').textContent = 'Sesión cerrada.';
+
+};
+
+cargarSocio();
+
+</script>
+
+</body>
+</html>
