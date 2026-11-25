@@ -209,7 +209,34 @@ Crear cuenta de prueba
 <p>Nombre: <strong id="socioNombre"></strong></p>
 <p>Número de socio: <strong id="numeroSocio"></strong></p>
 <p>Email: <strong id="socioEmail"></strong></p>
+<div id="solicitudPrueba" hidden>
 
+<h3>Solicitar membresía</h3>
+<p>Contratación de prueba sin cobro.</p>
+
+<form id="formContrato">
+
+<label for="planSocio">Selecciona tu plan</label>
+<select id="planSocio" required
+style="width:100%;padding:14px;border-radius:10px;background:#061217;color:white">
+</select>
+
+<label for="matriculaSocio">Matrícula</label>
+<input id="matriculaSocio"
+placeholder="1234 ABC"
+maxlength="15" required>
+
+<p id="resumenPlan"></p>
+
+<button type="submit" id="solicitarBtn">
+Solicitar membresía
+</button>
+
+</form>
+
+<p id="mensajeContrato" role="status"></p>
+
+</div>
 <h3>Mis contratos</h3>
 <div id="contratos"></div>
 
@@ -379,7 +406,7 @@ $('contratos').appendChild(p);
 });
 
 }
-
+await cargarPlanesPrueba(socio.numero_socio);
 $('acceso').hidden = true;
 $('panel').hidden = false;
 
@@ -400,7 +427,100 @@ $('formulario').reset();
 $('mensaje').textContent = 'Sesión cerrada.';
 
 };
+let planesPrueba = [];
 
+async function cargarPlanesPrueba(numeroSocio){
+
+$('solicitudPrueba').hidden = true;
+
+if(Number(numeroSocio) !== 1) return;
+
+const {data,error} = await cliente
+.from('membresias')
+.select('id,nombre,precio_mensual,permanencia_meses,servicios_anuales')
+.order('precio_mensual');
+
+if(error || !data || !data.length) return;
+
+planesPrueba = data;
+
+$('planSocio').replaceChildren();
+
+data.forEach(plan => {
+
+const opcion = document.createElement('option');
+
+opcion.value = plan.id;
+opcion.textContent = plan.nombre;
+
+$('planSocio').appendChild(opcion);
+
+});
+
+$('solicitudPrueba').hidden = false;
+
+mostrarResumenPlan();
+
+}
+
+function mostrarResumenPlan(){
+
+const plan = planesPrueba.find(
+p => p.id === $('planSocio').value
+);
+
+if(!plan) return;
+
+$('resumenPlan').textContent =
+'Cuota mensual: '+Number(plan.precio_mensual).toFixed(2)+' €'+
+' | Total anual: '+(plan.precio_mensual*plan.permanencia_meses).toFixed(2)+' €'+
+' | Permanencia: '+plan.permanencia_meses+' meses'+
+' | Servicios anuales: '+plan.servicios_anuales;
+
+}
+
+$('planSocio').onchange = mostrarResumenPlan;
+
+$('formContrato').onsubmit = async e => {
+
+e.preventDefault();
+
+$('solicitarBtn').disabled = true;
+
+$('mensajeContrato').textContent =
+'Procesando solicitud...';
+
+try{
+
+const {error} = await cliente.rpc(
+'solicitar_membresia',
+{
+p_membresia_id: $('planSocio').value,
+p_matricula: $('matriculaSocio').value
+}
+);
+
+if(error) throw error;
+
+$('matriculaSocio').value = '';
+
+await cargarSocio();
+
+$('mensajeContrato').textContent =
+'Solicitud registrada correctamente. Pendiente de activación.';
+
+}catch(error){
+
+$('mensajeContrato').textContent =
+'Error: '+error.message;
+
+}finally{
+
+$('solicitarBtn').disabled = false;
+
+}
+
+};
 cargarSocio();
 
 </script>
